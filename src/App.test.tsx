@@ -11,6 +11,16 @@ describe('App', () => {
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('DemonLexe')
   })
 
+  it('shows the Roblox avatar headshot on the home tab only', () => {
+    render(<App />)
+
+    const img = screen.getByRole('img', { name: /DemonLexe.*Roblox avatar/i })
+    expect(img).toHaveAttribute('src', expect.stringMatching(/headshot\.png$/))
+
+    fireEvent.click(screen.getByRole('link', { name: 'Work' }))
+    expect(screen.queryByRole('img', { name: /Roblox avatar/i })).toBeNull()
+  })
+
   it('switches active tab and main content when clicking header tabs', () => {
     render(<App />)
 
