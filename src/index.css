@@ -16,3 +16,9 @@ body {
   background-color: #cc4b00;
   color: #fff;
 }
+
+.headshot {
+  display: block;
+  object-fit: cover;
+  background-color: #dee2e6;
+}

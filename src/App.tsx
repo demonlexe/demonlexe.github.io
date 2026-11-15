@@ -33,6 +33,15 @@ function App() {
 
       <main className="flex-grow-1">
         <Container className="py-5">
+          {activeTab === 'home' && (
+            <img
+              src={`${import.meta.env.BASE_URL}headshot.png`}
+              alt="DemonLexe's Roblox avatar headshot"
+              width={160}
+              height={160}
+              className="headshot rounded-circle mb-4"
+            />
+          )}
           <h1 className="mb-3">{section.title}</h1>
           <p className="text-secondary mb-0">{section.subtitle}</p>
         </Container>
