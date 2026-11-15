@@ -22,6 +22,7 @@ npm run dev      # start the dev server
 npm run build    # type-check and build to dist/
 npm run preview  # preview the production build
 npm run lint     # run oxlint
+npm test         # run vitest unit/component tests
 ```
 
 ## Project structure
@@ -29,8 +30,9 @@ npm run lint     # run oxlint
 ```
 src/
   components/
-    Header.tsx    # top navigation bar (brand: DemonLexe)
+    Header.tsx    # top navigation bar (brand, availability lozenge, nav tabs)
     Footer.tsx    # site footer (name + license notice)
+  config.ts       # site configuration (e.g. availability: "open" | "busy" | "closed")
   App.tsx         # page shell: Header / main / Footer
   index.css       # global styles (imported after Bootstrap)
   main.tsx        # entry point; imports Bootstrap CSS first

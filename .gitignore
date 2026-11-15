@@ -30,3 +30,6 @@ dist-ssr
 
 # AI
 repomix-output.xml
+
+# Worktrees
+.worktrees/
