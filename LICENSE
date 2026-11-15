@@ -1,0 +1,54 @@
+DemonLexe — All Rights Reserved
+Copyright (c) 2026 DemonLexe. All rights reserved.
+
+This software and its associated content (collectively, the "Work") — including
+all source code, build scripts, configuration, designs, layouts, artwork,
+images, illustrations, text, copy, and other materials in this repository or
+published on any site deployed from it — are the exclusive property of
+DemonLexe.
+
+1. NO LICENSE GRANTED
+
+Permission is hereby NOT granted to copy, modify, publish, distribute,
+sublicense, sell, mirror, scrape, train on, or create derivative works of
+the Work, in whole or in part, without the prior written permission of
+DemonLexe.
+
+2. PERSONAL USE ONLY
+
+You may view and run the Work locally for your own personal, non-commercial
+use. You may not redistribute it, publish it, or display it as your own work.
+
+3. ATTRIBUTION
+
+If you are granted explicit written permission to reuse any part of the Work,
+you must give appropriate credit to DemonLexe, link back to the source, and
+indicate that the original work is not yours.
+
+4. NO WARRANTY
+
+THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHOR OR COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF, OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS IN THE
+WORK.
+
+5. NO OPEN SOURCE LICENSE
+
+The Work is not licensed under the MIT License, the Apache License, the GPL, or
+any other open source license. Nothing in this file grants you any of the
+rights or freedoms that an open source license would grant, regardless of
+whether the Work is published on a public repository.
+
+6. THIRD PARTY COMPONENTS
+
+This repository depends on third party packages (including React, React
+Bootstrap, and Bootstrap), which remain licensed to their respective owners
+under their own licenses. Those licenses are unaffected by this file.
+
+7. CONTACT
+
+To request permission to reuse the Work, open an issue at:
+https://github.com/demonlexe/demonlexe.github.io/issues
