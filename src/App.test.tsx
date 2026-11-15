@@ -2,14 +2,18 @@ import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import App from './App.tsx'
 
-vi.mock('./roblox/gameInfo.ts', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('./roblox/gameInfo.ts')>()),
-  fetchGameInfo: vi.fn(async (placeId: number) => ({
-    name: placeId === 85115018573521 ? 'Pick a Gear Tower 💥' : 'Clean a Beach',
-    playing: 79,
-    visits: 6106400,
-    imageUrl: 'https://tr.rbxcdn.com/thumb.png',
-  })),
+vi.mock('./roblox/gameStore.ts', () => ({
+  gameStore: {
+    loadSnapshot: vi.fn(async () => null),
+    loadLive: vi.fn(async (placeId: number) => ({
+      placeId,
+      universeId: 1,
+      name: placeId === 85115018573521 ? 'Pick a Gear Tower 💥' : 'Clean a Beach',
+      playing: 79,
+      visits: 6106400,
+      imageUrl: 'https://tr.rbxcdn.com/thumb.png',
+    })),
+  },
 }))
 
 vi.mock('./roblox/groupInfo.ts', () => ({

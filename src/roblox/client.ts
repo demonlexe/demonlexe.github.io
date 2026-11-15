@@ -29,12 +29,13 @@ const MAX_DELAY_MS = 3000
 const defaultSleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms))
 
 class HttpError extends Error {
-  constructor(
-    readonly status: number,
-    path: string,
-    readonly retryAfterMs?: number,
-  ) {
+  readonly status: number
+  readonly retryAfterMs: number | undefined
+
+  constructor(status: number, path: string, retryAfterMs?: number) {
     super(`Roblox API responded ${status} for ${path.split('?')[0]}`)
+    this.status = status
+    this.retryAfterMs = retryAfterMs
   }
 
   get retryable(): boolean {

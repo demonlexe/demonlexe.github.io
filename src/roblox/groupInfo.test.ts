@@ -47,10 +47,24 @@ describe('fetchGroupMemberCount', () => {
     expect(fetchMock.mock.calls[0][1]).toEqual({ signal: controller.signal })
   })
 
-  it('rejects when the API responds with an error status', async () => {
+  it('rejects when the API keeps responding with an error status', async () => {
     const fetchMock = vi.fn<typeof fetch>(async () => json({}, { status: 429 }))
+    const sleep = vi.fn(async () => {})
 
-    await expect(fetchGroupMemberCount(1, fetchMock)).rejects.toThrow(/429/)
+    await expect(
+      fetchGroupMemberCount(1, fetchMock, undefined, { sleep }),
+    ).rejects.toThrow(/429/)
+  })
+
+  it('fails over to another host when rate limited', async () => {
+    const fetchMock = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(json({}, { status: 429 }))
+      .mockResolvedValueOnce(json({ roles: [{ memberCount: 7, isBase: true }] }))
+
+    await expect(fetchGroupMemberCount(1, fetchMock)).resolves.toBe(7)
+    const hosts = fetchMock.mock.calls.map(([url]) => new URL(String(url)).hostname)
+    expect(hosts).toEqual(['groups.roproxy.com', 'groups.rotunnel.com'])
   })
 
   it('rejects when the response has no roles', async () => {

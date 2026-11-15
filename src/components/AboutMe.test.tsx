@@ -1,7 +1,7 @@
 import { render, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import AboutMe from './AboutMe.tsx'
-import * as gameInfo from '../roblox/gameInfo.ts'
+import { gameStore } from '../roblox/gameStore.ts'
 import * as groupInfo from '../roblox/groupInfo.ts'
 
 const VISITS: Record<number, number> = {
@@ -14,7 +14,9 @@ const MEMBERS: Record<number, number> = {
 }
 
 beforeEach(() => {
-  vi.spyOn(gameInfo, 'fetchGameInfo').mockImplementation(async (placeId) => ({
+  vi.spyOn(gameStore, 'loadLive').mockImplementation(async (placeId) => ({
+    placeId,
+    universeId: 1,
     name: 'Game',
     playing: 0,
     visits: VISITS[placeId],
@@ -38,16 +40,8 @@ describe('AboutMe', () => {
     expect(term.nextElementSibling).toHaveTextContent('…')
 
     expect(await screen.findByText('6,114,195+')).toBe(term.nextElementSibling)
-    expect(gameInfo.fetchGameInfo).toHaveBeenCalledWith(
-      85115018573521,
-      expect.anything(),
-      expect.anything(),
-    )
-    expect(gameInfo.fetchGameInfo).toHaveBeenCalledWith(
-      125204338128040,
-      expect.anything(),
-      expect.anything(),
-    )
+    expect(gameStore.loadLive).toHaveBeenCalledWith(85115018573521)
+    expect(gameStore.loadLive).toHaveBeenCalledWith(125204338128040)
   })
 
   it('shows community members summed across every community, once loaded', async () => {
@@ -84,7 +78,7 @@ describe('AboutMe', () => {
   })
 
   it('shows a dash for a stat that fails to load, without breaking the other', async () => {
-    vi.spyOn(gameInfo, 'fetchGameInfo').mockRejectedValue(new Error('boom'))
+    vi.spyOn(gameStore, 'loadLive').mockRejectedValue(new Error('boom'))
 
     render(<AboutMe />)
 
