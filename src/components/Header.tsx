@@ -1,3 +1,5 @@
+import { circuitBoard } from 'hero-patterns'
+import type { CSSProperties } from 'react'
 import Badge from 'react-bootstrap/Badge'
 import Container from 'react-bootstrap/Container'
 import Nav from 'react-bootstrap/Nav'
@@ -12,6 +14,9 @@ import {
   type HeaderTab,
 } from '../config.ts'
 
+// Subtle circuit-board overlay (hero-patterns) layered over the header gradient.
+const HEADER_PATTERN = circuitBoard('#ffffff', 0.12)
+
 interface HeaderProps {
   activeTab?: HeaderTab
   onSelectTab?: (tab: HeaderTab) => void
@@ -22,6 +27,7 @@ const HEADER_TABS: readonly { key: HeaderTab; label: string }[] = [
   { key: 'home', label: 'Home' },
   { key: 'work', label: 'Work' },
   { key: 'stack', label: 'Stack' },
+  { key: 'pricing', label: 'Pricing' },
   { key: 'contact', label: 'Contact' },
 ]
 
@@ -61,9 +67,11 @@ function Header({
     <Navbar
       expand="md"
       collapseOnSelect
+      sticky="top"
       bg="dark"
       data-bs-theme="dark"
-      className="py-3"
+      className="site-header py-3"
+      style={{ '--header-pattern': HEADER_PATTERN } as CSSProperties}
     >
       <Container>
         <div className="d-flex align-items-center gap-3">

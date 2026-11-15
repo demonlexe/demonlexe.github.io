@@ -48,6 +48,15 @@ The home page shows the Roblox avatar headshot for `siteConfig.robloxUserId`
 fetched by a Vite plugin at dev-server/build time and served as `/headshot.png`
 rather than from the browser. Building therefore requires network access.
 
+## SEO
+
+Search metadata lives in `siteConfig.seo` (`src/config.ts`): `siteUrl`, `title`
+(≤60 chars), `description` (≤160 chars), and `keywords`. The Vite plugin in
+`build/seo.ts` turns that into the `<title>`, description/keywords meta, canonical
+link, Open Graph and Twitter tags, and schema.org `Person` JSON-LD in
+`index.html`, and emits `robots.txt` and `sitemap.xml` into `dist/` on build.
+Update `siteUrl` if the site moves to a custom domain.
+
 ## Bootstrap
 
 Bootstrap's stylesheet is imported first in `src/main.tsx` so that project

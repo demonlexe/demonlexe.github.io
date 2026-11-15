@@ -1,5 +1,54 @@
+:root {
+  --font-display: 'Chakra Petch', system-ui, sans-serif;
+  --brand-gradient: linear-gradient(90deg, #5b21b6, #1d4ed8);
+  --divider-gradient: linear-gradient(90deg, #5b21b6, #1d4ed8, #ffffff);
+  /* Warm parchment page background. */
+  --page-bg: #f4ecd8;
+}
+
+/* In-page navigation: leave room for the sticky header (~5rem) when scrolling to a section. */
+html {
+  scroll-padding-top: 5rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 body {
   margin: 0;
+  /* Bootstrap reads --bs-body-bg for the body background; point it at the parchment. */
+  --bs-body-bg: var(--page-bg);
+  background-color: var(--page-bg);
+}
+
+/* Display font for titles and tabs; body text keeps the regular font. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.navbar-brand,
+.nav-link {
+  font-family: var(--font-display);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  letter-spacing: 0.02em;
+}
+
+.nav-link {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.85rem;
 }
 
 #root {
@@ -21,4 +70,34 @@ body {
   display: block;
   object-fit: cover;
   background-color: #dee2e6;
+}
+
+.section-divider {
+  height: 3px;
+  margin: 0 0 1.5rem;
+  border: 0;
+  border-radius: 999px;
+  opacity: 1;
+  background: var(--divider-gradient);
+}
+
+.site-header {
+  background-image: var(--header-pattern), var(--brand-gradient);
+}
+
+.site-footer {
+  background-image: var(--brand-gradient);
+}
+
+.game-card__image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background-color: #dee2e6;
+}
+
+.skill-lozenge {
+  background-color: #5b21b6;
+  color: #fff;
 }
