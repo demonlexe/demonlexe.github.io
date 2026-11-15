@@ -3,6 +3,27 @@ import { describe, expect, it, vi } from 'vitest'
 import Header from './Header.tsx'
 
 describe('Header', () => {
+  it('applies a technical circuit-board pattern layer from hero-patterns', () => {
+    const { container } = render(<Header />)
+
+    const pattern = (container.querySelector('nav') as HTMLElement).style.getPropertyValue(
+      '--header-pattern',
+    )
+    expect(pattern).toMatch(/^url\(["']?data:image\/svg\+xml/)
+  })
+
+  it('uses the gradient header class', () => {
+    const { container } = render(<Header />)
+
+    expect(container.querySelector('nav')).toHaveClass('site-header')
+  })
+
+  it('is sticky to the top of the viewport', () => {
+    const { container } = render(<Header />)
+
+    expect(container.querySelector('nav')).toHaveClass('sticky-top')
+  })
+
   it('renders the DemonLexe username, availability lozenge, and 4 right-justified tabs in order', () => {
     render(<Header />)
 
@@ -10,12 +31,13 @@ describe('Header', () => {
     const lozenge = screen.getByTestId('availability-lozenge')
     const navLinks = screen
       .getAllByRole('link')
-      .filter((link) => ['Home', 'Work', 'Stack', 'Contact'].includes(link.textContent ?? ''))
+      .filter((link) => ['Home', 'Work', 'Stack', 'Pricing', 'Contact'].includes(link.textContent ?? ''))
 
     expect(navLinks.map((link) => link.textContent)).toEqual([
       'Home',
       'Work',
       'Stack',
+      'Pricing',
       'Contact',
     ])
 
