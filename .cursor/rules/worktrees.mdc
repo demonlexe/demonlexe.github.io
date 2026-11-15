@@ -1,0 +1,15 @@
+---
+description: Git worktree location and workflow convention for this repository
+alwaysApply: true
+---
+
+# Git Worktrees
+
+Place all git worktrees inside `.worktrees/<name>` at the repository root:
+
+```bash
+git worktree add .worktrees/<name> -b <branch-name>
+```
+
+- `.worktrees/` is git-ignored; keep all worktree directories inside `.worktrees/` rather than outside the repository.
+- Run `npm ci` inside a new worktree before building, linting, or running tests.
