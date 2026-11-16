@@ -58,7 +58,7 @@ function App() {
           </Container>
         </section>
 
-        <OtherWork />
+        {siteConfig.showOtherWork && <OtherWork />}
 
         <Testimonials />
 

@@ -7,6 +7,10 @@ describe("siteConfig", () => {
     expect(siteConfig.availability).toBe("open");
   });
 
+  it("hides the Other Work section by default", () => {
+    expect(siteConfig.showOtherWork).toBe(false);
+  });
+
   it("stores the Roblox user id used to fetch the avatar headshot", () => {
     expect(siteConfig.robloxUserId).toBe(81878687);
   });

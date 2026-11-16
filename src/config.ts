@@ -119,6 +119,8 @@ export interface SiteConfig {
   /** Games shown in the My Games section; name, stats and thumbnail are fetched live.
    * Shown most visited first; list order only matters until visits load or for ties. */
   games: readonly GameEntry[];
+  /** Toggle for the Other Work section; when false the section is hidden entirely. */
+  showOtherWork: boolean;
   /** Non-game work (UI/tooling for clients), shown in the Other Work section. */
   otherWork: readonly OtherWorkEntry[];
   /** Communities whose member counts are fetched live and totalled in About Me. */
@@ -306,6 +308,7 @@ export const siteConfig: SiteConfig = {
     // Escape The Dark Forest Obby
     { placeId: 5036935449 },
   ],
+  showOtherWork: false,
   otherWork: [
     {
       title: "Appointment System",
