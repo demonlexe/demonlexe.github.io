@@ -30,3 +30,24 @@ export async function fetchGroupMemberCount(
   const base = roles.find((role) => role.isBase)
   return base ? base.memberCount : roles.reduce((sum, role) => sum + role.memberCount, 0)
 }
+
+/**
+ * Url of a community's icon, or null while Roblox hasn't generated it yet
+ * (or there is none).
+ */
+export async function fetchGroupIconUrl(
+  groupId: number,
+  fetchImpl: typeof fetch = (...args) => fetch(...args),
+  signal?: AbortSignal,
+  options: Partial<RequestOptions> = {},
+): Promise<string | null> {
+  const { data } = await getJson<{
+    data?: { state?: string; imageUrl?: string }[]
+  }>(
+    'thumbnails',
+    `/v1/groups/icons?groupIds=${groupId}&size=150x150&format=Png&isCircular=false`,
+    { hosts: PROXY_HOSTS, ...options, fetchImpl, signal },
+  )
+  const icon = data?.[0]
+  return icon?.state === 'Completed' && icon.imageUrl ? icon.imageUrl : null
+}

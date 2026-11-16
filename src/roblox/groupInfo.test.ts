@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { fetchGroupMemberCount } from './groupInfo.ts'
+import { fetchGroupIconUrl, fetchGroupMemberCount } from './groupInfo.ts'
 
 function json(body: unknown, init?: ResponseInit) {
   return new Response(JSON.stringify(body), init)
@@ -71,5 +71,43 @@ describe('fetchGroupMemberCount', () => {
     const fetchMock = vi.fn<typeof fetch>(async () => json({}))
 
     await expect(fetchGroupMemberCount(1, fetchMock)).rejects.toThrow(/not found/i)
+  })
+})
+
+describe('fetchGroupIconUrl', () => {
+  it('returns the completed icon url from the thumbnails API', async () => {
+    const fetchMock = vi.fn<typeof fetch>(async () =>
+      json({
+        data: [
+          { targetId: 2768830, state: 'Completed', imageUrl: 'https://tr.rbxcdn.com/icon.png' },
+        ],
+      }),
+    )
+
+    await expect(fetchGroupIconUrl(2768830, fetchMock)).resolves.toBe(
+      'https://tr.rbxcdn.com/icon.png',
+    )
+    expect(String(fetchMock.mock.calls[0][0])).toBe(
+      'https://thumbnails.roproxy.com/v1/groups/icons?groupIds=2768830&size=150x150&format=Png&isCircular=false',
+    )
+  })
+
+  it('returns null while the icon is not ready or missing', async () => {
+    const pending = vi.fn<typeof fetch>(async () =>
+      json({ data: [{ targetId: 1, state: 'Pending', imageUrl: '' }] }),
+    )
+    const empty = vi.fn<typeof fetch>(async () => json({ data: [] }))
+
+    await expect(fetchGroupIconUrl(1, pending)).resolves.toBeNull()
+    await expect(fetchGroupIconUrl(1, empty)).resolves.toBeNull()
+  })
+
+  it('passes the abort signal through to fetch', async () => {
+    const fetchMock = vi.fn<typeof fetch>(async () => json({ data: [] }))
+    const controller = new AbortController()
+
+    await fetchGroupIconUrl(1, fetchMock, controller.signal)
+
+    expect(fetchMock.mock.calls[0][1]).toEqual({ signal: controller.signal })
   })
 })

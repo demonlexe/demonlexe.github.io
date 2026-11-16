@@ -253,3 +253,9 @@ h6 {
       username-glow 3s ease-in-out infinite;
   }
 }
+
+.other-work__video {
+  display: block;
+  aspect-ratio: 16 / 9;
+  background-color: #000;
+}

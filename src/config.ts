@@ -58,6 +58,30 @@ export interface CommunityEntry {
   groupId: number;
 }
 
+export interface WorkVideo {
+  /** Caption shown with the video, e.g. "Student side". */
+  label: string;
+  /** File under public/videos, relative to the site root (self-hosted). */
+  file: string;
+}
+
+export interface OtherWorkClient {
+  name: string;
+  /** Roblox group id: the number in roblox.com/communities/<groupId>/... */
+  groupId: number;
+  /** Community page on roblox.com. */
+  url: string;
+}
+
+export interface OtherWorkEntry {
+  title: string;
+  /** Short credit line shown under the title. */
+  note?: string;
+  /** Community the work was done for; icon and member count are fetched live. */
+  client: OtherWorkClient;
+  videos: readonly WorkVideo[];
+}
+
 export interface SeoConfig {
   /** Absolute origin the site is served from (used for canonical, OG and sitemap urls). */
   siteUrl: string;
@@ -95,6 +119,8 @@ export interface SiteConfig {
   /** Games shown in the My Games section; name, stats and thumbnail are fetched live.
    * Shown most visited first; list order only matters until visits load or for ties. */
   games: readonly GameEntry[];
+  /** Non-game work (UI/tooling for clients), shown in the Other Work section. */
+  otherWork: readonly OtherWorkEntry[];
   /** Communities whose member counts are fetched live and totalled in About Me. */
   communities: readonly CommunityEntry[];
   seo: SeoConfig;
@@ -280,6 +306,26 @@ export const siteConfig: SiteConfig = {
     // Escape The Dark Forest Obby
     { placeId: 5036935449 },
   ],
+  otherWork: [
+    {
+      title: "Appointment System",
+      client: {
+        name: "Valley Community High School",
+        groupId: 2768830,
+        url: "https://www.roblox.com/communities/2768830/Valley-Community-High-School",
+      },
+      videos: [
+        {
+          label: "Student side",
+          file: "videos/appointment-system-student.mp4",
+        },
+        {
+          label: "Teacher side",
+          file: "videos/appointment-system-teacher.mp4",
+        },
+      ],
+    },
+  ],
   communities: [
     // HexPlum
     { groupId: 6323399 },
@@ -289,8 +335,7 @@ export const siteConfig: SiteConfig = {
   seo: {
     siteUrl: "https://demonlexe.github.io/",
     title: "DemonLexe | Roblox Developer for Hire",
-    description:
-      `Hire DemonLexe, a full-stack Roblox developer with ${yearsOfExperience}+ years of experience building engaging games, scripts, UI and backend systems.`,
+    description: `Hire DemonLexe, a full-stack Roblox developer with ${yearsOfExperience}+ years of experience building engaging games, scripts, UI and backend systems.`,
     keywords: [
       "Roblox developer",
       "Roblox scripter",

@@ -24,6 +24,7 @@ vi.mock('./roblox/gameStore.ts', () => ({
 
 vi.mock('./roblox/groupInfo.ts', () => ({
   fetchGroupMemberCount: vi.fn(async () => 100),
+  fetchGroupIconUrl: vi.fn(async () => 'https://tr.rbxcdn.com/icon.png'),
 }))
 
 describe('App', () => {
@@ -77,7 +78,7 @@ describe('App', () => {
     expect(img).toHaveAttribute('src', expect.stringMatching(/headshot\.png$/))
   })
 
-  it('renders all six sections stacked on one page with their headings', () => {
+  it('renders all seven sections stacked on one page with their headings', () => {
     const { container } = render(<App />)
 
     expect(container.querySelectorAll('main')).toHaveLength(1)
@@ -86,13 +87,14 @@ describe('App', () => {
     const expected: [string, number, string][] = [
       ['home', 1, 'DemonLexe'],
       ['work', 2, 'My Games'],
+      ['other-work', 2, 'Other Work'],
       ['testimonials', 2, 'Testimonials'],
       ['stack', 2, 'Technologies used'],
       ['pricing', 2, 'Pricing & Payment'],
       ['contact', 2, 'Contact'],
     ]
     const ids = [...container.querySelectorAll('main > section')].map((el) => el.id)
-    expect(ids).toEqual(['home', 'work', 'testimonials', 'stack', 'pricing', 'contact'])
+    expect(ids).toEqual(['home', 'work', 'other-work', 'testimonials', 'stack', 'pricing', 'contact'])
 
     for (const [id, level, name] of expected) {
       const section = container.querySelector(`main > section#${id}`) as HTMLElement
@@ -200,7 +202,7 @@ describe('App', () => {
       expect(screen.getByRole('link', { name: label })).toHaveClass('active')
       expect(screen.getAllByRole('link', { name: /^(Home|Work|Stack|Pricing|Contact)$/ }).filter((l) => l.classList.contains('active'))).toHaveLength(1)
 
-      expect(container.querySelectorAll('main > section')).toHaveLength(6)
+      expect(container.querySelectorAll('main > section')).toHaveLength(7)
       expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('DemonLexe')
       expect(screen.getByRole('heading', { level: 2, name: /about me/i })).toBeInTheDocument()
       expect(screen.getAllByTestId('game-card')).toHaveLength(5)
