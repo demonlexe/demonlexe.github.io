@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import App from './App.tsx'
+import { siteConfig } from './config.ts'
 
 vi.mock('./roblox/gameStore.ts', () => ({
   gameStore: {
@@ -44,7 +45,7 @@ describe('App', () => {
 
     const img = screen.getByRole('img', { name: /Roblox avatar/i })
     const heading = screen.getByRole('heading', { level: 1 })
-    const subtitle = screen.getByText('Full-stack developer with 10+ YoE creating fun, engaging ROBLOX games')
+    const subtitle = screen.getByText(siteConfig.tagline)
     const row = img.parentElement as HTMLElement
 
     expect(row).toHaveClass('d-flex')
@@ -63,7 +64,7 @@ describe('App', () => {
     expect(img).toHaveAttribute('src', expect.stringMatching(/headshot\.png$/))
   })
 
-  it('renders all five sections stacked on one page with their headings', () => {
+  it('renders all six sections stacked on one page with their headings', () => {
     const { container } = render(<App />)
 
     expect(container.querySelectorAll('main')).toHaveLength(1)
@@ -72,12 +73,13 @@ describe('App', () => {
     const expected: [string, number, string][] = [
       ['home', 1, 'DemonLexe'],
       ['work', 2, 'Work'],
-      ['stack', 2, 'Stack'],
+      ['testimonials', 2, 'Testimonials'],
+      ['stack', 2, 'Technologies used'],
       ['pricing', 2, 'Pricing & Payment'],
       ['contact', 2, 'Contact'],
     ]
     const ids = [...container.querySelectorAll('main > section')].map((el) => el.id)
-    expect(ids).toEqual(['home', 'work', 'stack', 'pricing', 'contact'])
+    expect(ids).toEqual(['home', 'work', 'testimonials', 'stack', 'pricing', 'contact'])
 
     for (const [id, level, name] of expected) {
       const section = container.querySelector(`main > section#${id}`) as HTMLElement
@@ -87,11 +89,10 @@ describe('App', () => {
       expect(heading.id).not.toBe('')
     }
 
-    expect(
-      within(container.querySelector('#stack') as HTMLElement).getByText(
-        'Languages, frameworks, and tools — coming soon.',
-      ),
-    ).toBeInTheDocument()
+    const stack = within(container.querySelector('#stack') as HTMLElement)
+    expect(stack.getByText('Tools I use to build and ship Roblox games.')).toBeInTheDocument()
+    expect(stack.getByRole('link', { name: 'Rojo' })).toBeInTheDocument()
+    expect(stack.getByRole('heading', { level: 3, name: 'Version control' })).toBeInTheDocument()
   })
 
   it('shows every section content at once without clicking any tab', async () => {
@@ -118,6 +119,12 @@ describe('App', () => {
     expect(within(contact).getByRole('link', { name: /roblox/i })).toBeInTheDocument()
   })
 
+  it('does not add Testimonials to the header nav', () => {
+    render(<App />)
+
+    expect(screen.queryByRole('link', { name: /testimonials/i })).not.toBeInTheDocument()
+  })
+
   it('links each header tab to its section id', () => {
     render(<App />)
 
@@ -141,7 +148,7 @@ describe('App', () => {
       expect(screen.getByRole('link', { name: label })).toHaveClass('active')
       expect(screen.getAllByRole('link', { name: /^(Home|Work|Stack|Pricing|Contact)$/ }).filter((l) => l.classList.contains('active'))).toHaveLength(1)
 
-      expect(container.querySelectorAll('main > section')).toHaveLength(5)
+      expect(container.querySelectorAll('main > section')).toHaveLength(6)
       expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('DemonLexe')
       expect(screen.getByRole('heading', { level: 2, name: /about me/i })).toBeInTheDocument()
       expect(screen.getAllByTestId('game-card')).toHaveLength(2)
