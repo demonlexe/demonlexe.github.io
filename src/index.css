@@ -97,6 +97,46 @@ h6 {
   background-color: #dee2e6;
 }
 
+/*
+ * Rank badge pinned on a game thumbnail. No border: a soft shadow separates it
+ * from busy images instead, and every fill/text pair is at least 4.5:1.
+ */
+.rank-badge {
+  position: absolute;
+  top: 0.65rem;
+  left: 0.65rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background-color: #5b21b6;
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.25),
+    0 3px 8px rgba(0, 0, 0, 0.5);
+}
+
+.rank-badge--1 {
+  background-color: #f5b800;
+  color: #2a1c00;
+}
+
+.rank-badge--2 {
+  background-color: #dfe3e8;
+  color: #1f2933;
+}
+
+.rank-badge--3 {
+  background-color: #8f4a10;
+  color: #fff;
+}
+
 /* Staggered testimonials: accent edge and text alignment follow the card's side. */
 .testimonial-card {
   border-width: 0;
