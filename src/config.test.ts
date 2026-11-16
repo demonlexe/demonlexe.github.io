@@ -136,7 +136,9 @@ describe("siteConfig", () => {
     expect(siteConfig.profile.bio).toMatch(/5 games/);
     expect(siteConfig.profile.bio).toMatch(/10\+ clients/);
     expect(siteConfig.profile.bio).toMatch(/Head Developer/);
-    expect(siteConfig.profile.bio).toMatch(/embraced coding agents/);
+    expect(siteConfig.profile.bio).toMatch(/use AI responsibly to code faster/);
+    expect(siteConfig.profile.bio).toMatch(/playtesting/);
+    expect(siteConfig.profile.bio).not.toMatch(/embraced coding agents/);
     expect(siteConfig.profile.bioContact).toMatch(/Message me/);
   });
 

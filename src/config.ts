@@ -143,8 +143,8 @@ export const siteConfig: SiteConfig = {
       "Hey there! I'm Lexi, a full-stack Roblox developer. I've released 5 games (detailed below) " +
       "and delivered commissions for 10+ clients, including two long-term roles as Head Developer. " +
       "I started at 13 writing Luau scripts for cafe games, moved on to building for other groups, " +
-      "and grew into developing full games of my own. Today, I've embraced coding agents to speed up " +
-      "my workflow and ship faster. I'm open to commissions of any size and have " +
+      "and grew into developing full games of my own. Like many others in the field, I use AI " +
+      "responsibly to code faster, checking my work and playtesting thoroughly as always. I'm open to commissions of any size and have " +
       "experience with nearly every kind of system: inventories, simulator mechanics, NPC " +
       "pathfinding, vehicles, UI, and much more.",
     bioContact:
