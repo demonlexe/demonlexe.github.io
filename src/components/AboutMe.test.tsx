@@ -1,22 +1,27 @@
-import { render, screen, within } from "@testing-library/react";
+import { act, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import AboutMe from "./AboutMe.tsx";
+import AboutMe, { REFRESH_MS } from "./AboutMe.tsx";
 import { gameStore } from "../roblox/gameStore.ts";
 import * as groupInfo from "../roblox/groupInfo.ts";
 
-const VISITS: Record<number, number> = {
+const INITIAL_VISITS: Record<number, number> = {
   85115018573521: 6106400,
   125204338128040: 7795,
   135717480652890: 1000,
   6829025363: 2000,
   5036935449: 3000,
 };
-const MEMBERS: Record<number, number> = {
+const INITIAL_MEMBERS: Record<number, number> = {
   6323399: 2856,
   10804046: 97,
 };
+// Mutated by the live-update tests to simulate Roblox's numbers moving.
+let VISITS = { ...INITIAL_VISITS };
+let MEMBERS = { ...INITIAL_MEMBERS };
 
 beforeEach(() => {
+  VISITS = { ...INITIAL_VISITS };
+  MEMBERS = { ...INITIAL_MEMBERS };
   vi.spyOn(gameStore, "loadLive").mockImplementation(async (placeId) => ({
     placeId,
     universeId: 1,
@@ -211,5 +216,159 @@ describe("AboutMe", () => {
 
     expect(screen.getByText("1+ year")).toBeInTheDocument();
     expect(screen.getByRole("listitem")).toHaveTextContent("Scripting");
+  });
+});
+
+describe("AboutMe live updates", () => {
+  const TOTAL_VISITS = 6120195;
+
+  const settle = () =>
+    act(async () => {
+      await vi.advanceTimersByTimeAsync(0);
+    });
+  const tick = (ms = REFRESH_MS) =>
+    act(async () => {
+      await vi.advanceTimersByTimeAsync(ms);
+    });
+
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  it("refreshes every 30 seconds", () => {
+    expect(REFRESH_MS).toBe(30_000);
+  });
+
+  it("re-fetches both stats after each interval, bypassing the cache for visits", async () => {
+    render(<AboutMe />);
+    await settle();
+    const visitCalls = vi.mocked(gameStore.loadLive).mock.calls.length;
+    const memberCalls = vi.mocked(groupInfo.fetchGroupMemberCount).mock.calls.length;
+
+    await tick(REFRESH_MS - 1);
+    expect(gameStore.loadLive).toHaveBeenCalledTimes(visitCalls);
+
+    await tick(1);
+    expect(gameStore.loadLive).toHaveBeenCalledTimes(visitCalls * 2);
+    expect(gameStore.loadLive).toHaveBeenLastCalledWith(expect.any(Number), { fresh: true });
+    expect(groupInfo.fetchGroupMemberCount).toHaveBeenCalledTimes(memberCalls * 2);
+
+    await tick();
+    expect(gameStore.loadLive).toHaveBeenCalledTimes(visitCalls * 3);
+  });
+
+  it("only uses the cache-friendly load for the first fetch", async () => {
+    render(<AboutMe />);
+    await settle();
+
+    const firstCalls = vi.mocked(gameStore.loadLive).mock.calls;
+    expect(firstCalls.every((args) => args.length === 1)).toBe(true);
+  });
+
+  it("shows no change indicator before the first refresh", async () => {
+    render(<AboutMe />);
+    await settle();
+
+    expect(screen.getByTestId("total-visits")).toHaveTextContent(`${TOTAL_VISITS.toLocaleString("en-US")}+`);
+    expect(screen.queryByTestId("total-visits-change")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("community-members-change")).not.toBeInTheDocument();
+  });
+
+  it("animates a green up arrow with the delta when totals grow", async () => {
+    render(<AboutMe />);
+    await settle();
+
+    VISITS[85115018573521] += 25;
+    MEMBERS[6323399] += 3;
+    await tick();
+
+    expect(screen.getByTestId("total-visits")).toHaveTextContent("6,120,220+");
+    expect(screen.getByTestId("total-visits-change")).toHaveClass("live-stat__change--up");
+    expect(screen.getByTestId("total-visits-change")).toHaveTextContent("+25");
+    expect(screen.getByTestId("community-members")).toHaveTextContent("2,956+");
+    expect(screen.getByTestId("community-members-change")).toHaveTextContent("+3");
+  });
+
+  it("only flags the stat that actually changed", async () => {
+    render(<AboutMe />);
+    await settle();
+
+    MEMBERS[6323399] += 1;
+    await tick();
+
+    expect(screen.getByTestId("community-members-change")).toBeInTheDocument();
+    expect(screen.queryByTestId("total-visits-change")).not.toBeInTheDocument();
+  });
+
+  it("shows a red down arrow when a total drops", async () => {
+    render(<AboutMe />);
+    await settle();
+
+    MEMBERS[10804046] -= 2;
+    await tick();
+
+    expect(screen.getByTestId("community-members")).toHaveTextContent("2,951+");
+    expect(screen.getByTestId("community-members-change")).toHaveClass("live-stat__change--down");
+  });
+
+  it("keeps showing the last good value when a refresh fails", async () => {
+    render(<AboutMe />);
+    await settle();
+
+    vi.mocked(gameStore.loadLive).mockRejectedValue(new Error("429"));
+    vi.mocked(groupInfo.fetchGroupMemberCount).mockRejectedValue(new Error("429"));
+    await tick();
+
+    expect(screen.getByTestId("total-visits")).toHaveTextContent("6,120,195+");
+    expect(screen.getByTestId("community-members")).toHaveTextContent("2,953+");
+  });
+
+  it("recovers on a later refresh after the first load failed", async () => {
+    vi.mocked(gameStore.loadLive).mockRejectedValueOnce(new Error("boom"));
+    render(<AboutMe />);
+    await settle();
+    expect(screen.getByTestId("total-visits")).toHaveTextContent("—");
+
+    await tick();
+
+    expect(screen.getByTestId("total-visits")).toHaveTextContent("6,120,195+");
+    expect(screen.queryByTestId("total-visits-change")).not.toBeInTheDocument();
+  });
+
+  it("does not refresh while the tab is hidden", async () => {
+    render(<AboutMe />);
+    await settle();
+    const calls = vi.mocked(groupInfo.fetchGroupMemberCount).mock.calls.length;
+    const hidden = vi.spyOn(document, "hidden", "get").mockReturnValue(true);
+
+    await tick();
+    expect(groupInfo.fetchGroupMemberCount).toHaveBeenCalledTimes(calls);
+
+    hidden.mockReturnValue(false);
+    await tick();
+    expect(groupInfo.fetchGroupMemberCount).toHaveBeenCalledTimes(calls * 2);
+  });
+
+  it("stops refreshing once unmounted", async () => {
+    const { unmount } = render(<AboutMe />);
+    await settle();
+    const calls = vi.mocked(groupInfo.fetchGroupMemberCount).mock.calls.length;
+
+    unmount();
+    await tick(REFRESH_MS * 3);
+
+    expect(groupInfo.fetchGroupMemberCount).toHaveBeenCalledTimes(calls);
+  });
+
+  it("does not start another refresh while one is still in flight", async () => {
+    render(<AboutMe />);
+    await settle();
+    const calls = vi.mocked(groupInfo.fetchGroupMemberCount).mock.calls.length;
+    vi.mocked(groupInfo.fetchGroupMemberCount).mockImplementation(() => new Promise(() => {}));
+
+    await tick();
+    await tick();
+
+    expect(groupInfo.fetchGroupMemberCount).toHaveBeenCalledTimes(calls + 2);
   });
 });

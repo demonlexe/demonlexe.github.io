@@ -241,6 +241,84 @@ h6 {
   }
 }
 
+/* Live totals (About Me): a flash on the number and an arrow with the change. */
+.live-stat--up {
+  --live-stat-color: #146c43;
+}
+
+.live-stat--down {
+  --live-stat-color: #b02a37;
+}
+
+.live-stat__change {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  margin-left: 0.6em;
+  font-size: 0.85em;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--live-stat-color);
+}
+
+.live-stat__arrow {
+  flex: none;
+}
+
+/* Two identical flashes, alternated so a change mid-animation restarts it. */
+@keyframes live-stat-flash-a {
+  from {
+    color: var(--live-stat-color);
+  }
+}
+
+@keyframes live-stat-flash-b {
+  from {
+    color: var(--live-stat-color);
+  }
+}
+
+@keyframes live-stat-change-in {
+  0% {
+    opacity: 0;
+    transform: translateY(0.6em);
+  }
+  12% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes live-stat-arrow-up {
+  0% {
+    transform: translateY(0.4em);
+  }
+  60% {
+    transform: translateY(-0.2em);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes live-stat-arrow-down {
+  0% {
+    transform: translateY(-0.4em);
+  }
+  60% {
+    transform: translateY(0.2em);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
 /* Motion is opt-out: skip all of it for visitors who prefer reduced motion. */
 @media (prefers-reduced-motion: no-preference) {
   .headshot--bobbing {
@@ -251,5 +329,25 @@ h6 {
     animation:
       username-shimmer 6s linear infinite,
       username-glow 3s ease-in-out infinite;
+  }
+
+  .live-stat--phase-0 {
+    animation: live-stat-flash-a 1.6s ease-out;
+  }
+
+  .live-stat--phase-1 {
+    animation: live-stat-flash-b 1.6s ease-out;
+  }
+
+  .live-stat__change {
+    animation: live-stat-change-in 4s ease-out forwards;
+  }
+
+  .live-stat--up .live-stat__arrow {
+    animation: live-stat-arrow-up 0.9s ease-out;
+  }
+
+  .live-stat--down .live-stat__arrow {
+    animation: live-stat-arrow-down 0.9s ease-out;
   }
 }

@@ -128,6 +128,41 @@ describe('loadLive', () => {
     expect(again.playing).toBe(99)
   })
 
+  it('refetches when fresh data is requested even though the cache is valid', async () => {
+    const { store, fetchLive } = setup()
+    await store.loadLive(1)
+
+    await store.loadLive(1, { fresh: true })
+
+    expect(fetchLive).toHaveBeenCalledTimes(2)
+  })
+
+  it('caches the result of a fresh load for later normal loads', async () => {
+    let visits = 500
+    const fetchLive = vi.fn<GameStoreDeps['fetchLive']>(
+      async (placeIds) => new Map(placeIds.map((id) => [id, game(id, { visits })])),
+    )
+    const { store } = setup({ fetchLive })
+    await store.loadLive(1)
+    visits = 900
+    await store.loadLive(1, { fresh: true })
+
+    const again = await store.loadLive(1)
+
+    expect(fetchLive).toHaveBeenCalledTimes(2)
+    expect(again.visits).toBe(900)
+  })
+
+  it('batches fresh requests made in the same tick into one fetch', async () => {
+    const { store, fetchLive } = setup()
+    await Promise.all([store.loadLive(1), store.loadLive(2)])
+
+    await Promise.all([store.loadLive(1, { fresh: true }), store.loadLive(2, { fresh: true })])
+
+    expect(fetchLive).toHaveBeenCalledTimes(2)
+    expect(fetchLive.mock.calls[1][0]).toEqual([1, 2])
+  })
+
   it('refetches once the cached result is older than the ttl', async () => {
     const { store, fetchLive, advance } = setup()
     await store.loadLive(1)

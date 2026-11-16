@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useState } from 'react'
 import Badge from 'react-bootstrap/Badge'
 import {
   siteConfig,
@@ -9,6 +9,7 @@ import {
 import { yearsSince } from '../experience.ts'
 import { gameStore } from '../roblox/gameStore.ts'
 import { fetchGroupMemberCount } from '../roblox/groupInfo.ts'
+import LiveStat, { type Total } from './LiveStat.tsx'
 import SectionDivider from './SectionDivider.tsx'
 import SectionIcon from './SectionIcon.tsx'
 
@@ -20,16 +21,23 @@ interface AboutMeProps {
   communities?: readonly CommunityEntry[]
 }
 
-type Total = { status: 'loading' } | { status: 'error' } | { status: 'loaded'; value: number }
-
-const full = new Intl.NumberFormat('en-US')
+/** How often the visit and member totals are re-fetched. */
+export const REFRESH_MS = 30_000
 
 function formatYears(years: number): string {
   return `${years}+ ${years === 1 ? 'year' : 'years'}`
 }
 
-/** Fetches one number per id and sums them; any failure fails the whole total. */
-function useTotal(ids: readonly number[], fetchOne: (id: number, signal: AbortSignal) => Promise<number>): Total {
+/**
+ * Fetches one number per id and sums them, then re-fetches every `REFRESH_MS`.
+ * A failure on the first load shows an error until a later refresh succeeds; a
+ * failed refresh keeps the last good total. Refreshes pause while the tab is
+ * hidden and never overlap.
+ */
+function useTotal(
+  ids: readonly number[],
+  fetchOne: (id: number, signal: AbortSignal, fresh: boolean) => Promise<number>,
+): Total {
   const [total, setTotal] = useState<Total>({ status: 'loading' })
   // Rebuilt from a string key so a fresh `ids` array each render doesn't refetch.
   const key = ids.join(',')
@@ -37,26 +45,42 @@ function useTotal(ids: readonly number[], fetchOne: (id: number, signal: AbortSi
   useEffect(() => {
     const controller = new AbortController()
     const idList = key ? key.split(',').map(Number) : []
-    Promise.all(idList.map((id) => fetchOne(id, controller.signal))).then(
-      (counts) => setTotal({ status: 'loaded', value: counts.reduce((a, b) => a + b, 0) }),
-      () => {
-        if (!controller.signal.aborted) setTotal({ status: 'error' })
-      },
-    )
-    return () => controller.abort()
+    let busy = false
+
+    const load = (fresh: boolean) => {
+      busy = true
+      Promise.all(idList.map((id) => fetchOne(id, controller.signal, fresh)))
+        .then(
+          (counts) => setTotal({ status: 'loaded', value: counts.reduce((a, b) => a + b, 0) }),
+          () => {
+            if (!controller.signal.aborted) {
+              setTotal((prev) => (prev.status === 'loaded' ? prev : { status: 'error' }))
+            }
+          },
+        )
+        .finally(() => {
+          busy = false
+        })
+    }
+
+    load(false)
+    const timer = setInterval(() => {
+      if (!busy && !document.hidden) load(true)
+    }, REFRESH_MS)
+
+    return () => {
+      clearInterval(timer)
+      controller.abort()
+    }
   }, [key, fetchOne])
 
   return total
 }
 
-function renderTotal(total: Total): ReactNode {
-  if (total.status === 'loading') return <span aria-busy="true">…</span>
-  if (total.status === 'error') return <span title="Couldn't load right now">—</span>
-  return `${full.format(total.value)}+`
-}
-
 // Shares one batched, cached request with the My Games section's game cards.
-const visitsOf = async (placeId: number) => (await gameStore.loadLive(placeId)).visits
+// Refreshes skip the cache, otherwise most ticks would just re-read it.
+const visitsOf = async (placeId: number, _signal: AbortSignal, fresh: boolean) =>
+  (await (fresh ? gameStore.loadLive(placeId, { fresh }) : gameStore.loadLive(placeId))).visits
 const membersOf = (groupId: number, signal: AbortSignal) =>
   fetchGroupMemberCount(groupId, fetch, signal)
 
@@ -82,10 +106,10 @@ function AboutMe({
         <dd className="col-sm-9">{formatYears(yearsSince(profile.careerStartYear))}</dd>
 
         <dt className="col-sm-3 text-secondary fw-normal">Total visits</dt>
-        <dd className="col-sm-9" data-testid="total-visits">{renderTotal(visits)}</dd>
+        <LiveStat total={visits} testId="total-visits" />
 
         <dt className="col-sm-3 text-secondary fw-normal">Community members</dt>
-        <dd className="col-sm-9" data-testid="community-members">{renderTotal(members)}</dd>
+        <LiveStat total={members} testId="community-members" />
 
         <dt className="col-sm-3 text-secondary fw-normal">Skillset</dt>
         <dd className="col-sm-9">
