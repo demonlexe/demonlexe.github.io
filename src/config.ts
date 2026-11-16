@@ -146,7 +146,7 @@ export const siteConfig: SiteConfig = {
   },
   contact: {
     // TODO: replace with the real Discord user ID (numeric snowflake).
-    discordUserId: "REPLACE_WITH_DISCORD_USER_ID",
+    discordUserId: "554429973302214666",
     robloxUsername: "DemonLexe",
     githubUsername: "demonlexe",
   },
