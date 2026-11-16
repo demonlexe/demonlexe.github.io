@@ -86,7 +86,7 @@ export interface SiteConfig {
   testimonialsSourceUrl: string;
   /** Preferred tech stack shown in the Technologies used section, grouped by purpose. */
   stack: readonly StackGroup[];
-  /** Games shown in the Work section; name, stats and thumbnail are fetched live. */
+  /** Games shown in the My Games section; name, stats and thumbnail are fetched live. */
   games: readonly GameEntry[];
   /** Communities whose member counts are fetched live and totalled in About Me. */
   communities: readonly CommunityEntry[];
@@ -256,6 +256,12 @@ export const siteConfig: SiteConfig = {
     { placeId: 85115018573521 },
     // Clean a Beach
     { placeId: 125204338128040 },
+    // Retro SLAP
+    { placeId: 135717480652890 },
+    // Cook Away
+    { placeId: 6829025363 },
+    // Escape The Dark Forest Obby
+    { placeId: 5036935449 },
   ],
   communities: [
     // HexPlum

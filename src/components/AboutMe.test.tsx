@@ -7,6 +7,9 @@ import * as groupInfo from "../roblox/groupInfo.ts";
 const VISITS: Record<number, number> = {
   85115018573521: 6106400,
   125204338128040: 7795,
+  135717480652890: 1000,
+  6829025363: 2000,
+  5036935449: 3000,
 };
 const MEMBERS: Record<number, number> = {
   6323399: 2856,
@@ -33,16 +36,19 @@ afterEach(() => {
 });
 
 describe("AboutMe", () => {
-  it("shows total visits across every Work game, once loaded", async () => {
+  it("shows total visits across every My Games game, once loaded", async () => {
     render(<AboutMe />);
 
     const term = screen.getByText("Total visits");
     expect(term.tagName).toBe("DT");
     expect(term.nextElementSibling).toHaveTextContent("…");
 
-    expect(await screen.findByText("6,114,195+")).toBe(term.nextElementSibling);
+    expect(await screen.findByText("6,120,195+")).toBe(term.nextElementSibling);
     expect(gameStore.loadLive).toHaveBeenCalledWith(85115018573521);
     expect(gameStore.loadLive).toHaveBeenCalledWith(125204338128040);
+    expect(gameStore.loadLive).toHaveBeenCalledWith(135717480652890);
+    expect(gameStore.loadLive).toHaveBeenCalledWith(6829025363);
+    expect(gameStore.loadLive).toHaveBeenCalledWith(5036935449);
   });
 
   it("shows community members summed across every community, once loaded", async () => {
