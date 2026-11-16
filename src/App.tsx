@@ -48,9 +48,11 @@ function App() {
         <section id="work" aria-labelledby="work-heading" className="py-5">
           <Container>
             <h2 id="work-heading" className="mb-1">
-              Work
+              My Games
             </h2>
-            <p className="text-secondary mb-0">Roblox games I have worked on.</p>
+            <p className="text-secondary mb-0">
+              These are games I own and developed from start to finish.
+            </p>
             <Row xs={1} md={2} lg={3} className="g-4 mt-1">
               {siteConfig.games.map((game) => (
                 <Col key={game.placeId}>
