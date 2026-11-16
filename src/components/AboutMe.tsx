@@ -3,6 +3,7 @@ import Badge from 'react-bootstrap/Badge'
 import {
   siteConfig,
   type CommunityEntry,
+  type ContactDetails,
   type GameEntry,
   type Profile,
 } from '../config.ts'
@@ -14,6 +15,8 @@ import SectionIcon from './SectionIcon.tsx'
 
 interface AboutMeProps {
   profile?: Profile
+  /** Where the bio's Discord link points. */
+  contact?: ContactDetails
   /** Games whose visits are added together for "Total visits". */
   games?: readonly GameEntry[]
   /** Communities whose members are added together for "Community members". */
@@ -62,6 +65,7 @@ const membersOf = (groupId: number, signal: AbortSignal) =>
 
 function AboutMe({
   profile = siteConfig.profile,
+  contact = siteConfig.contact,
   games = siteConfig.games,
   communities = siteConfig.communities,
 }: AboutMeProps) {
@@ -80,6 +84,18 @@ function AboutMe({
       <dl className="row mb-0">
         <dt className="col-sm-3 text-secondary fw-normal">Experience</dt>
         <dd className="col-sm-9">{formatYears(yearsSince(profile.careerStartYear))}</dd>
+
+        <dt className="col-sm-3 text-secondary fw-normal">Bio</dt>
+        <dd className="col-sm-9">
+          {profile.bio}{' '}
+          <a
+            href={`https://discord.com/users/${encodeURIComponent(contact.discordUserId)}`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Discord ↗
+          </a>
+        </dd>
 
         <dt className="col-sm-3 text-secondary fw-normal">Total visits</dt>
         <dd className="col-sm-9" data-testid="total-visits">{renderTotal(visits)}</dd>

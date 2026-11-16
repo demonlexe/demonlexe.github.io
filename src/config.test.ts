@@ -131,10 +131,18 @@ describe("siteConfig", () => {
     });
   });
 
+  it("defines a bio that mentions the key facts", () => {
+    expect(siteConfig.profile.bio).toMatch(/Lexi/);
+    expect(siteConfig.profile.bio).toMatch(/5 games/);
+    expect(siteConfig.profile.bio).toMatch(/10\+ clients/);
+    expect(siteConfig.profile.bio).toMatch(/Head Developer/);
+  });
+
   it("defines the profile used by the About Me section", () => {
     expect(siteConfig.profile).toEqual({
       username: "DemonLexe",
       careerStartYear: 2016,
+      bio: expect.any(String),
       skills: [
         { name: "Frontend programming", kind: "programming" },
         { name: "Backend programming", kind: "programming" },

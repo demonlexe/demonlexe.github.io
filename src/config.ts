@@ -18,6 +18,8 @@ export interface Profile {
   username: string;
   /** Calendar year I started; the Experience row is calculated from it. */
   careerStartYear: number;
+  /** Intro paragraph shown in the Bio row; a Discord link is appended after it. */
+  bio: string;
   skills: readonly Skill[];
 }
 
@@ -135,6 +137,14 @@ export const siteConfig: SiteConfig = {
   profile: {
     username: "DemonLexe",
     careerStartYear: CAREER_START_YEAR,
+    bio:
+      "Hey there! I'm Lexi, a full-stack Roblox developer. I've released 5 games (detailed below) " +
+      "and delivered commissions for 10+ clients, including two long-term roles as Head Developer. " +
+      "I started at 13 writing Luau scripts for cafe games, moved on to building for other groups, " +
+      "and grew into developing full games of my own. I'm open to commissions of any size and have " +
+      "experience with nearly every kind of system: inventories, simulator mechanics, NPC " +
+      "pathfinding, vehicles, UI, and much more. Message me with details about your project and " +
+      "I'll let you know if it's a fit!",
     skills: [
       { name: "Frontend programming", kind: "programming" },
       { name: "Backend programming", kind: "programming" },
