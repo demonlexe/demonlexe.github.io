@@ -87,14 +87,19 @@ function AboutMe({
 
         <dt className="col-sm-3 text-secondary fw-normal">Bio</dt>
         <dd className="col-sm-9">
-          {profile.bio}{' '}
-          <a
-            href={`https://discord.com/users/${encodeURIComponent(contact.discordUserId)}`}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Discord ↗
-          </a>
+          <p className="mb-2" data-testid="bio-paragraph">
+            {profile.bio}
+          </p>
+          <p className="mb-0" data-testid="bio-paragraph">
+            {profile.bioContact}{' '}
+            <a
+              href={`https://discord.com/users/${encodeURIComponent(contact.discordUserId)}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Discord ↗
+            </a>
+          </p>
         </dd>
 
         <dt className="col-sm-3 text-secondary fw-normal">Total visits</dt>

@@ -207,6 +207,7 @@ describe("AboutMe", () => {
           username: "Someone",
           careerStartYear: new Date().getFullYear() - 1,
           bio: "Custom bio.",
+          bioContact: "Custom contact line.",
           skills: [{ name: "Scripting", kind: "other" }],
         }}
       />,
@@ -228,6 +229,20 @@ describe("AboutMe", () => {
     expect(term.nextElementSibling).toHaveTextContent(/I'm Lexi/);
   });
 
+  it("puts the message-me line and Discord link on their own line below the bio", () => {
+    render(<AboutMe />);
+
+    const bio = screen.getByText("Bio").nextElementSibling as HTMLElement;
+    const paragraphs = within(bio).getAllByTestId("bio-paragraph");
+    expect(paragraphs).toHaveLength(2);
+    expect(paragraphs[0]).toHaveTextContent(siteConfig.profile.bio);
+    expect(paragraphs[0]).not.toHaveTextContent(/message me/i);
+    expect(paragraphs[1]).toHaveTextContent(siteConfig.profile.bioContact);
+    expect(paragraphs[1]).toContainElement(
+      within(bio).getByRole("link", { name: "Discord ↗" }),
+    );
+  });
+
   it("ends the bio with a Discord ↗ link to the configured Discord user", () => {
     render(
       <AboutMe
@@ -235,6 +250,7 @@ describe("AboutMe", () => {
           username: "Someone",
           careerStartYear: 2020,
           bio: "Hello there.",
+          bioContact: "Message me!",
           skills: [],
         }}
         contact={{
@@ -250,6 +266,7 @@ describe("AboutMe", () => {
     expect(link).toHaveAttribute("href", "https://discord.com/users/123456789");
     expect(link).toHaveAttribute("target", "_blank");
     expect(link).toHaveAttribute("rel", "noreferrer");
-    expect(bio).toHaveTextContent("Hello there. Discord ↗");
+    expect(bio).toHaveTextContent("Hello there.");
+    expect(bio).toHaveTextContent("Message me! Discord ↗");
   });
 });

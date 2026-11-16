@@ -137,6 +137,7 @@ describe("siteConfig", () => {
     expect(siteConfig.profile.bio).toMatch(/10\+ clients/);
     expect(siteConfig.profile.bio).toMatch(/Head Developer/);
     expect(siteConfig.profile.bio).toMatch(/embraced coding agents/);
+    expect(siteConfig.profile.bioContact).toMatch(/Message me/);
   });
 
   it("defines the profile used by the About Me section", () => {
@@ -144,6 +145,7 @@ describe("siteConfig", () => {
       username: "DemonLexe",
       careerStartYear: 2016,
       bio: expect.any(String),
+      bioContact: expect.any(String),
       skills: [
         { name: "Frontend programming", kind: "programming" },
         { name: "Backend programming", kind: "programming" },

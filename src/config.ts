@@ -18,8 +18,10 @@ export interface Profile {
   username: string;
   /** Calendar year I started; the Experience row is calculated from it. */
   careerStartYear: number;
-  /** Intro paragraph shown in the Bio row; a Discord link is appended after it. */
+  /** Intro paragraph shown in the Bio row. */
   bio: string;
+  /** Call to action on its own line under the bio; a Discord link is appended after it. */
+  bioContact: string;
   skills: readonly Skill[];
 }
 
@@ -144,8 +146,9 @@ export const siteConfig: SiteConfig = {
       "and grew into developing full games of my own. Today, I've embraced coding agents to speed up " +
       "my workflow and ship faster. I'm open to commissions of any size and have " +
       "experience with nearly every kind of system: inventories, simulator mechanics, NPC " +
-      "pathfinding, vehicles, UI, and much more. Message me with details about your project and " +
-      "I'll let you know if it's a fit!",
+      "pathfinding, vehicles, UI, and much more.",
+    bioContact:
+      "Message me with details about your project and I'll let you know if it's a fit!",
     skills: [
       { name: "Frontend programming", kind: "programming" },
       { name: "Backend programming", kind: "programming" },
