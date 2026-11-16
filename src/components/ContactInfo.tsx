@@ -11,11 +11,19 @@ function ContactInfo({ contact = siteConfig.contact }: ContactInfoProps) {
 
   return (
     <div className="mt-4">
-      <ul aria-label="Contact links" className="list-unstyled mb-0 d-flex flex-column gap-2">
+      <ul aria-label="Contact links" className="list-unstyled mb-0 d-flex flex-column gap-3 fs-4">
         <li>
           <a href={discordUrl} target="_blank" rel="noreferrer">
-            Discord
+            Discord (demonlexe)
           </a>
+          <span
+            role="img"
+            aria-label="Recommended contact method"
+            title="Recommended contact method"
+            className="ms-2 text-warning"
+          >
+            ★
+          </span>
         </li>
         <li>
           <a href={robloxUrl} target="_blank" rel="noreferrer">

@@ -44,11 +44,26 @@ describe('ContactInfo', () => {
     expect(link).toHaveAttribute('rel', expect.stringContaining('noreferrer'))
   })
 
-  it('labels the links exactly "Discord", "Roblox Profile" and "GitHub"', () => {
+  it('labels the links "Discord (demonlexe)", "Roblox Profile" and "GitHub"', () => {
     render(<ContactInfo />)
 
     const labels = screen.getAllByRole('link').map((link) => link.textContent)
-    expect(labels).toEqual(['Discord', 'Roblox Profile', 'GitHub'])
+    expect(labels).toEqual(['Discord (demonlexe)', 'Roblox Profile', 'GitHub'])
+  })
+
+  it('marks Discord with a star as the recommended contact method', () => {
+    render(<ContactInfo />)
+
+    const star = screen.getByRole('img', { name: /recommended/i })
+    const discordItem = screen.getByRole('link', { name: /discord/i }).closest('li')
+    expect(discordItem).toContainElement(star)
+    expect(screen.getAllByRole('img')).toHaveLength(1)
+  })
+
+  it('renders the contact links at a larger font size', () => {
+    render(<ContactInfo />)
+
+    expect(screen.getByRole('list', { name: /contact links/i })).toHaveClass('fs-4')
   })
 
   it('reads defaults from site config', () => {
