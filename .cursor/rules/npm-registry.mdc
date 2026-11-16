@@ -1,0 +1,13 @@
+---
+description: Only use the public npm registry; no Atlassian-internal packages or registry URLs
+alwaysApply: true
+---
+
+# Public npm Registry Only
+
+This is a public GitHub Pages project. Atlassian-internal npm packages (`@atlassian/*`, `@atlaskit/*`, etc.) and the internal mirror (`packages.atlassian.com`) are unreachable from CI and other machines, so they must never appear in the repo.
+
+- Do not add Atlassian-specific packages to `package.json`.
+- `package-lock.json` must only contain `resolved` URLs under `https://registry.npmjs.org/`. If an install on an Atlassian machine rewrites them to `packages.atlassian.com`, rewrite them back before committing.
+- Keep `.npmrc` pinned to `registry=https://registry.npmjs.org/`. Install with `npm ci --registry=https://registry.npmjs.org/` if your user-level npm config points elsewhere.
+- `build/publicRegistry.test.ts` enforces this; keep it passing.
