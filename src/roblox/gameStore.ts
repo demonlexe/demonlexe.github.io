@@ -22,8 +22,14 @@ export interface GameStore {
   /**
    * Live details for a place. Requests made in the same tick are sent as one
    * batch, duplicates are shared, and results are cached for `ttlMs`.
+   * Pass `fresh` to skip the cache and refetch (the result is still cached).
    */
-  loadLive: (placeId: number) => Promise<GameInfo>
+  loadLive: (placeId: number, options?: LoadLiveOptions) => Promise<GameInfo>
+}
+
+export interface LoadLiveOptions {
+  /** Ignore a cached result and fetch again. */
+  fresh?: boolean
 }
 
 interface Deferred {
@@ -97,8 +103,8 @@ export function createGameStore(deps: GameStoreDeps): GameStore {
       return (await getSnapshot())[placeId] ?? null
     },
 
-    loadLive(placeId) {
-      const cached = readCache(placeId)
+    loadLive(placeId, { fresh = false } = {}) {
+      const cached = fresh ? null : readCache(placeId)
       if (cached) return Promise.resolve(cached)
 
       const existing = inflight.get(placeId)
