@@ -86,7 +86,8 @@ export interface SiteConfig {
   testimonialsSourceUrl: string;
   /** Preferred tech stack shown in the Technologies used section, grouped by purpose. */
   stack: readonly StackGroup[];
-  /** Games shown in the My Games section; name, stats and thumbnail are fetched live. */
+  /** Games shown in the My Games section; name, stats and thumbnail are fetched live.
+   * Shown most visited first; list order only matters until visits load or for ties. */
   games: readonly GameEntry[];
   /** Communities whose member counts are fetched live and totalled in About Me. */
   communities: readonly CommunityEntry[];
