@@ -71,7 +71,7 @@ function GameGrid({ games }: GameGridProps) {
     <Row xs={1} md={2} lg={3} className="g-4 mt-1">
       {ranked.map((game, index) => (
         <Col key={game.placeId}>
-          <div className="position-relative h-100">
+          <div className="game-grid__item position-relative h-100">
             {game.placeId in visits && <RankBadge rank={index + 1} />}
             <GameCard placeId={game.placeId} />
           </div>

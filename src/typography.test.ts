@@ -238,6 +238,68 @@ describe('home avatar bobbing', () => {
   })
 })
 
+describe('skill lozenge hover', () => {
+  it('grows when hovered', () => {
+    const hover = guardedCss.match(/\.skill-lozenge:hover\s*\{([^}]*)\}/)
+    expect(hover).not.toBeNull()
+    const scale = hover![1].match(/transform:\s*scale\((\d+(?:\.\d+)?)\)/)
+    expect(scale).not.toBeNull()
+    expect(Number(scale![1])).toBeGreaterThan(1)
+  })
+
+  it('animates the transform on the resting state, so it shrinks back smoothly when hover ends', () => {
+    const base = guardedCss.match(/\.skill-lozenge\s*\{([^}]*)\}/)
+    expect(base).not.toBeNull()
+    const transition = base![1].match(/transition:([^;]*);/)
+    expect(transition).not.toBeNull()
+    expect(transition![1]).toMatch(/transform\s+\d/)
+  })
+
+  it('only moves when reduced motion is not requested', () => {
+    expect(unguardedCss).not.toMatch(/\.skill-lozenge:hover/)
+    expect(unguardedCss).not.toMatch(/\.skill-lozenge[^{]*\{[^}]*transition:/)
+  })
+})
+
+describe('game card hover', () => {
+  // GameGrid: `g-4` = 1.5rem gutter. Widest card is a single column in a 540px container.
+  const GUTTER_PX = 24
+  const WIDEST_CARD_PX = 540 - GUTTER_PX
+  const scaleOf = () => {
+    const hover = guardedCss.match(/\.game-grid__item:hover\s*\{([^}]*)\}/)
+    expect(hover).not.toBeNull()
+    const scale = hover![1].match(/transform:\s*scale\((\d+(?:\.\d+)?)\)/)
+    expect(scale).not.toBeNull()
+    return Number(scale![1])
+  }
+
+  it('grows the card (with its rank badge) when hovered', () => {
+    expect(scaleOf()).toBeGreaterThan(1)
+  })
+
+  it('grows in place with a transform, so nothing else is pushed around', () => {
+    const hover = guardedCss.match(/\.game-grid__item:hover\s*\{([^}]*)\}/)![1]
+    expect(hover).not.toMatch(/\b(width|height|margin|padding|top|left|right|bottom)\s*:/)
+  })
+
+  it('grows less than the gutter, so it can never overlap a neighbouring card or the screen edge', () => {
+    const growthPerSide = ((scaleOf() - 1) * WIDEST_CARD_PX) / 2
+    // Half a gutter on each side: also the margin between a card and the viewport edge on mobile.
+    expect(growthPerSide).toBeLessThan(GUTTER_PX / 2)
+  })
+
+  it('animates the transform on the resting state so it shrinks back smoothly', () => {
+    const base = guardedCss.match(/\.game-grid__item\s*\{([^}]*)\}/)
+    expect(base).not.toBeNull()
+    expect(base![1].match(/transition:([^;]*);/)![1]).toMatch(/transform\s+\d/)
+  })
+
+  it('only moves when reduced motion is not requested', () => {
+    expect(unguardedCss).not.toMatch(/\.game-grid__item:hover/)
+    expect(unguardedCss).not.toMatch(/\.game-grid__item[^{]*\{[^}]*transition:/)
+  })
+})
+
 describe('home username vfx', () => {
   it('fills the username with a gradient clipped to the text', () => {
     const declarations = rulesFor('.username-vfx').join('\n')
