@@ -148,6 +148,7 @@ describe("siteConfig", () => {
       careerStartYear: 2016,
       bio: expect.any(String),
       bioContact: expect.any(String),
+      timezone: "PST (West Coast USA)",
       skills: [
         { name: "Frontend programming", kind: "programming" },
         { name: "Backend programming", kind: "programming" },

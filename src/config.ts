@@ -22,6 +22,8 @@ export interface Profile {
   bio: string;
   /** Call to action on its own line under the bio; a Discord link is appended after it. */
   bioContact: string;
+  /** Shown in the Timezone row. */
+  timezone: string;
   skills: readonly Skill[];
 }
 
@@ -149,6 +151,7 @@ export const siteConfig: SiteConfig = {
       "pathfinding, vehicles, UI, and much more.",
     bioContact:
       "Message me with details about your project and I'll let you know if it's a fit!",
+    timezone: "PST (West Coast USA)",
     skills: [
       { name: "Frontend programming", kind: "programming" },
       { name: "Backend programming", kind: "programming" },
