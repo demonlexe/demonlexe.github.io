@@ -1,10 +1,8 @@
 import { useState } from 'react'
-import Col from 'react-bootstrap/Col'
 import Container from 'react-bootstrap/Container'
-import Row from 'react-bootstrap/Row'
 import AboutMe from './components/AboutMe.tsx'
 import ContactInfo from './components/ContactInfo.tsx'
-import GameCard from './components/GameCard.tsx'
+import GameGrid from './components/GameGrid.tsx'
 import Footer from './components/Footer.tsx'
 import Header from './components/Header.tsx'
 import SectionIcon from './components/SectionIcon.tsx'
@@ -33,10 +31,10 @@ function App() {
                 alt="DemonLexe's Roblox avatar headshot"
                 width={80}
                 height={80}
-                className="headshot rounded-circle"
+                className="headshot headshot--bobbing rounded-circle"
               />
               <div>
-                <h1 id="home-heading" className="mb-1">
+                <h1 id="home-heading" className="username-vfx mb-1">
                   DemonLexe
                 </h1>
                 <p className="text-secondary mb-0">{siteConfig.tagline}</p>
@@ -50,16 +48,12 @@ function App() {
           <Container>
             <h2 id="work-heading" className="d-flex align-items-center gap-2 mb-1">
               <SectionIcon name="work" />
-              Work
+              My Games
             </h2>
-            <p className="text-secondary mb-0">Roblox games I have worked on.</p>
-            <Row xs={1} md={2} lg={3} className="g-4 mt-1">
-              {siteConfig.games.map((game) => (
-                <Col key={game.placeId}>
-                  <GameCard placeId={game.placeId} />
-                </Col>
-              ))}
-            </Row>
+            <p className="text-secondary mb-0">
+              These are games I own and developed from start to finish.
+            </p>
+            <GameGrid games={siteConfig.games} />
           </Container>
         </section>
 

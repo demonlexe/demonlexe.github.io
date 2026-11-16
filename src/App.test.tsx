@@ -9,7 +9,12 @@ vi.mock('./roblox/gameStore.ts', () => ({
     loadLive: vi.fn(async (placeId: number) => ({
       placeId,
       universeId: 1,
-      name: placeId === 85115018573521 ? 'Pick a Gear Tower 💥' : 'Clean a Beach',
+      name:
+        placeId === 85115018573521
+          ? 'Pick a Gear Tower 💥'
+          : placeId === 125204338128040
+            ? 'Clean a Beach'
+            : `Game ${placeId}`,
       playing: 79,
       visits: 6106400,
       imageUrl: 'https://tr.rbxcdn.com/thumb.png',
@@ -25,8 +30,8 @@ describe('App', () => {
   it('shows total visits and community members in About Me', async () => {
     render(<App />)
 
-    // 2 games x 6,106,400 visits; 2 communities x 100 members
-    expect(await screen.findByText('12,212,800+')).toBeInTheDocument()
+    // 5 games x 6,106,400 visits; 2 communities x 100 members
+    expect(await screen.findByText('30,532,000+')).toBeInTheDocument()
     expect(await screen.findByText('200+')).toBeInTheDocument()
     expect(screen.getByText('Total visits')).toBeInTheDocument()
     expect(screen.getByText('Community members')).toBeInTheDocument()
@@ -57,6 +62,14 @@ describe('App', () => {
     expect(Number(img.getAttribute('width'))).toBeLessThanOrEqual(96)
   })
 
+  it('bobs the avatar and adds vfx to the username on the home page', () => {
+    render(<App />)
+
+    expect(screen.getByRole('img', { name: /Roblox avatar/i })).toHaveClass('headshot--bobbing')
+    expect(screen.getByRole('heading', { level: 1 })).toHaveClass('username-vfx')
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('DemonLexe')
+  })
+
   it('shows the Roblox avatar headshot', () => {
     render(<App />)
 
@@ -72,7 +85,7 @@ describe('App', () => {
 
     const expected: [string, number, string][] = [
       ['home', 1, 'DemonLexe'],
-      ['work', 2, 'Work'],
+      ['work', 2, 'My Games'],
       ['testimonials', 2, 'Testimonials'],
       ['stack', 2, 'Technologies used'],
       ['pricing', 2, 'Pricing & Payment'],
@@ -127,7 +140,7 @@ describe('App', () => {
       expect(heading.firstElementChild).toHaveAttribute('aria-hidden', 'true')
     }
     // The icon doesn't change a title's accessible name.
-    expect(screen.getByRole('heading', { level: 2, name: 'Work' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 2, name: 'My Games' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { level: 2, name: 'Technologies used' })).toBeInTheDocument()
   })
 
@@ -144,7 +157,10 @@ describe('App', () => {
 
     expect(await within(work).findByRole('heading', { level: 3, name: 'Pick a Gear Tower 💥' })).toBeInTheDocument()
     expect(await within(work).findByRole('heading', { level: 3, name: 'Clean a Beach' })).toBeInTheDocument()
-    expect(within(work).getAllByTestId('game-card')).toHaveLength(2)
+    expect(within(work).getAllByTestId('game-card')).toHaveLength(5)
+    expect(
+      within(work).getByText('These are games I own and developed from start to finish.'),
+    ).toBeInTheDocument()
 
     expect(within(contact).queryByRole('heading', { name: /message me/i })).not.toBeInTheDocument()
     expect(within(contact).queryByRole('heading', { name: /pricing & payment/i })).not.toBeInTheDocument()
@@ -187,7 +203,7 @@ describe('App', () => {
       expect(container.querySelectorAll('main > section')).toHaveLength(6)
       expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('DemonLexe')
       expect(screen.getByRole('heading', { level: 2, name: /about me/i })).toBeInTheDocument()
-      expect(screen.getAllByTestId('game-card')).toHaveLength(2)
+      expect(screen.getAllByTestId('game-card')).toHaveLength(5)
       expect(screen.getByRole('heading', { level: 2, name: /pricing & payment/i })).toBeInTheDocument()
     }
   })

@@ -92,7 +92,8 @@ export interface SiteConfig {
   testimonialsSourceUrl: string;
   /** Preferred tech stack shown in the Technologies used section, grouped by purpose. */
   stack: readonly StackGroup[];
-  /** Games shown in the Work section; name, stats and thumbnail are fetched live. */
+  /** Games shown in the My Games section; name, stats and thumbnail are fetched live.
+   * Shown most visited first; list order only matters until visits load or for ties. */
   games: readonly GameEntry[];
   /** Communities whose member counts are fetched live and totalled in About Me. */
   communities: readonly CommunityEntry[];
@@ -130,7 +131,7 @@ export const siteConfig: SiteConfig = {
       author: "moslugs",
       quote: [
         "Hello everyone,",
-        "If you are reading this comment, you guys should most definitely give Avoxea a chance. She is one of the dedicated programmers I know on the ROBLOX DevForum, and I can assure you she is able to get the job done. She currently works for me with Valley Community High School alongside two other developers and serves as the Board of Development & Head Developer. Her work is worth it.",
+        "If you are reading this comment, you guys should most definitely give DemonLexe a chance. She is one of the dedicated programmers I know on the ROBLOX DevForum, and I can assure you she is able to get the job done. She currently works for me with Valley Community High School alongside two other developers and serves as the Board of Development & Head Developer. Her work is worth it.",
       ],
     },
     {
@@ -227,6 +228,16 @@ export const siteConfig: SiteConfig = {
       ],
     },
     {
+      category: "Data",
+      tools: [
+        {
+          name: "ProfileStore",
+          url: "https://devforum.roblox.com/t/profilestore-save-your-player-data-easy-datastore-module/3190543",
+          description: "Session-locked player data saving",
+        },
+      ],
+    },
+    {
       category: "Package management",
       tools: [
         {
@@ -262,6 +273,12 @@ export const siteConfig: SiteConfig = {
     { placeId: 85115018573521 },
     // Clean a Beach
     { placeId: 125204338128040 },
+    // Retro SLAP
+    { placeId: 135717480652890 },
+    // Cook Away
+    { placeId: 6829025363 },
+    // Escape The Dark Forest Obby
+    { placeId: 5036935449 },
   ],
   communities: [
     // HexPlum

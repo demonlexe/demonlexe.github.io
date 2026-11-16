@@ -55,7 +55,7 @@ function renderTotal(total: Total): ReactNode {
   return `${full.format(total.value)}+`
 }
 
-// Shares one batched, cached request with the Work section's game cards.
+// Shares one batched, cached request with the My Games section's game cards.
 const visitsOf = async (placeId: number) => (await gameStore.loadLive(placeId)).visits
 const membersOf = (groupId: number, signal: AbortSignal) =>
   fetchGroupMemberCount(groupId, fetch, signal)

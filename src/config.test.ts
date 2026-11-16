@@ -47,10 +47,16 @@ describe("siteConfig", () => {
     expect(siteConfig.contact.githubUsername).toBe("demonlexe");
   });
 
-  it("lists the games shown in the Work section by Roblox place id", () => {
+  it("lists the games shown in the My Games section by Roblox place id", () => {
     expect(siteConfig.games).toEqual([
       { placeId: 85115018573521 },
       { placeId: 125204338128040 },
+      // Retro SLAP
+      { placeId: 135717480652890 },
+      // Cook Away
+      { placeId: 6829025363 },
+      // Escape The Dark Forest Obby
+      { placeId: 5036935449 },
     ]);
   });
 
@@ -148,10 +154,24 @@ describe("siteConfig", () => {
       ["UI design", ["Figma"]],
       ["Animation", ["Animation Editor"]],
       ["Networking", ["Knit", "Proton"]],
+      ["Data", ["ProfileStore"]],
       ["Package management", ["Wally"]],
       ["Version control", ["GitHub"]],
       ["Project management", ["GitHub Projects"]],
     ]);
+  });
+
+  it("links ProfileStore to its DevForum announcement", () => {
+    const tool = siteConfig.stack
+      .flatMap((g) => g.tools)
+      .find((t) => t.name === "ProfileStore");
+    expect(tool?.url).toBe(
+      "https://devforum.roblox.com/t/profilestore-save-your-player-data-easy-datastore-module/3190543",
+    );
+  });
+
+  it("does not mention the old Avoxea name anywhere in the config", () => {
+    expect(JSON.stringify(siteConfig)).not.toMatch(/avoxea/i);
   });
 
   it("gives every stack tool a description and an https link", () => {
