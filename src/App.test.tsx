@@ -28,6 +28,33 @@ vi.mock('./roblox/groupInfo.ts', () => ({
 }))
 
 describe('App', () => {
+  const originalShowOtherWork = siteConfig.showOtherWork
+
+  afterEach(() => {
+    siteConfig.showOtherWork = originalShowOtherWork
+  })
+
+  describe('showOtherWork toggle', () => {
+    it('hides the Other Work section when the toggle is off', () => {
+      siteConfig.showOtherWork = false
+      const { container } = render(<App />)
+
+      expect(container.querySelector('#other-work')).toBeNull()
+      expect(screen.queryByRole('heading', { name: 'Other Work' })).not.toBeInTheDocument()
+      expect(container.querySelectorAll('main > section')).toHaveLength(6)
+    })
+
+    it('shows the Other Work section, between My Games and Testimonials, when the toggle is on', () => {
+      siteConfig.showOtherWork = true
+      const { container } = render(<App />)
+
+      expect(screen.getByRole('heading', { level: 2, name: 'Other Work' })).toBeInTheDocument()
+      expect([...container.querySelectorAll('main > section')].map((el) => el.id)).toEqual([
+        'home', 'work', 'other-work', 'testimonials', 'stack', 'pricing', 'contact',
+      ])
+    })
+  })
+
   it('shows total visits and community members in About Me', async () => {
     render(<App />)
 
@@ -93,6 +120,7 @@ describe('App', () => {
   })
 
   it('renders all seven sections stacked on one page with their headings', () => {
+    siteConfig.showOtherWork = true
     const { container } = render(<App />)
 
     expect(container.querySelectorAll('main')).toHaveLength(1)
@@ -208,6 +236,7 @@ describe('App', () => {
   })
 
   it('marks the clicked tab active without unmounting any section content', async () => {
+    siteConfig.showOtherWork = true
     const { container } = render(<App />)
     await screen.findAllByTestId('game-card')
 
