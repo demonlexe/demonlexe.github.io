@@ -2,6 +2,7 @@ import Badge from 'react-bootstrap/Badge'
 import Container from 'react-bootstrap/Container'
 import { siteConfig } from '../config.ts'
 import RobuxIcon from './RobuxIcon.tsx'
+import SectionIcon from './SectionIcon.tsx'
 
 const PAYMENT_ICONS: Record<string, () => React.JSX.Element> = {
   Robux: RobuxIcon,
@@ -19,7 +20,8 @@ function PricingPayment({
   return (
     <section id="pricing" aria-labelledby="pricing-payment-heading" className="py-5">
       <Container>
-        <h2 id="pricing-payment-heading" className="mb-1">
+        <h2 id="pricing-payment-heading" className="d-flex align-items-center gap-2 mb-1">
+          <SectionIcon name="pricing" />
           Pricing &amp; Payment
         </h2>
         <p className="text-secondary">What to expect when working with me.</p>

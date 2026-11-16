@@ -128,12 +128,15 @@ describe('page background (parchment)', () => {
 })
 
 describe('divider gradient', () => {
-  it('goes purple, then blue, then white', () => {
+  it('goes purple, then blue, then fades out to transparent', () => {
     const colors = gradientColors('--divider-gradient')
-    expect(colors).toHaveLength(3)
+    expect(colors).toHaveLength(2)
     expect(isPurple(colors[0])).toBe(true)
     expect(isBlue(colors[1])).toBe(true)
-    expect(isWhite(colors[2])).toBe(true)
+
+    const root = rulesFor(':root').join('\n')
+    const stops = root.match(/--divider-gradient:\s*linear-gradient\(([^;]*)\);/)![1]
+    expect(stops.trim()).toMatch(/,\s*(transparent|rgba\([^)]*,\s*0\))\s*$/)
   })
 
   it('is the divider background', () => {
@@ -160,26 +163,54 @@ describe('smooth in-page scrolling', () => {
 })
 
 describe('skill lozenges', () => {
-  it('are purple', () => {
-    const declarations = rulesFor('.skill-lozenge').join('\n')
+  const background = (selector: string) => {
+    const declarations = rulesFor(selector).join('\n')
     const match = declarations.match(/background-color:\s*(#[0-9a-fA-F]{6})\b/)
     expect(match).not.toBeNull()
-    expect(isPurple(toRgb(match![1]))).toBe(true)
+    return toRgb(match![1])
+  }
+
+  it('programming skills are purple', () => {
+    expect(isPurple(background('.skill-lozenge--programming'))).toBe(true)
   })
 
-  it('match the purple at the start of the header gradient', () => {
-    const declarations = rulesFor('.skill-lozenge').join('\n')
-    const lozenge = toRgb(declarations.match(/background-color:\s*(#[0-9a-fA-F]{6})\b/)![1])
+  it('programming skills match the purple at the start of the header gradient', () => {
     const [headerPurple] = gradientColors('--brand-gradient')
-    expect(lozenge).toEqual(headerPurple)
+    expect(background('.skill-lozenge--programming')).toEqual(headerPurple)
   })
 
-  it('use a darker purple than the original #7c3aed', () => {
-    const declarations = rulesFor('.skill-lozenge').join('\n')
-    const lozenge = toRgb(declarations.match(/background-color:\s*(#[0-9a-fA-F]{6})\b/)![1])
+  it('programming skills use a darker purple than the original #7c3aed', () => {
     const sum = (rgb: number[]) => rgb.reduce((a, b) => a + b, 0)
-    expect(sum(lozenge)).toBeLessThan(sum(toRgb('#7c3aed')) - 60)
+    expect(sum(background('.skill-lozenge--programming'))).toBeLessThan(
+      sum(toRgb('#7c3aed')) - 60,
+    )
   })
+
+  it('other skills are the blue at the end of the header gradient', () => {
+    const headerBlue = gradientColors('--brand-gradient')[1]
+    expect(isBlue(background('.skill-lozenge--other'))).toBe(true)
+    expect(background('.skill-lozenge--other')).toEqual(headerBlue)
+  })
+
+  it('use white text', () => {
+    expect(rulesFor('.skill-lozenge').join('\n')).toMatch(/color:\s*#fff(fff)?\b/)
+  })
+})
+
+describe('section icons', () => {
+  it('are filled with the header gradient through a mask', () => {
+    const declarations = rulesFor('.section-icon').join('\n')
+    expect(declarations).toMatch(/background(-image)?:\s*var\(--brand-gradient\)/)
+    expect(declarations).toMatch(/mask:/)
+  })
+
+  it.each(['about', 'work', 'testimonials', 'stack', 'pricing', 'contact'])(
+    'define an svg icon for %s',
+    (kind) => {
+      const declarations = rulesFor(`.section-icon--${kind}`).join('\n')
+      expect(declarations).toMatch(/data:image\/svg\+xml/)
+    },
+  )
 })
 
 // The motion rules live in the last reduced-motion guard, so they only apply when motion is OK.

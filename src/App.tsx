@@ -5,6 +5,7 @@ import ContactInfo from './components/ContactInfo.tsx'
 import GameGrid from './components/GameGrid.tsx'
 import Footer from './components/Footer.tsx'
 import Header from './components/Header.tsx'
+import SectionIcon from './components/SectionIcon.tsx'
 import StackList from './components/StackList.tsx'
 import OtherWork from './components/OtherWork.tsx'
 import PricingPayment from './components/PricingPayment.tsx'
@@ -46,7 +47,8 @@ function App() {
 
         <section id="work" aria-labelledby="work-heading" className="py-5">
           <Container>
-            <h2 id="work-heading" className="mb-1">
+            <h2 id="work-heading" className="d-flex align-items-center gap-2 mb-1">
+              <SectionIcon name="work" />
               My Games
             </h2>
             <p className="text-secondary mb-0">
@@ -62,7 +64,8 @@ function App() {
 
         <section id="stack" aria-labelledby="stack-heading" className="py-4">
           <Container>
-            <h2 id="stack-heading" className="mb-1">
+            <h2 id="stack-heading" className="d-flex align-items-center gap-2 mb-1">
+              <SectionIcon name="stack" />
               Technologies used
             </h2>
             <p className="text-secondary mb-0">
@@ -76,7 +79,8 @@ function App() {
 
         <section id="contact" aria-labelledby="contact-section-heading" className="py-5">
           <Container>
-            <h2 id="contact-section-heading" className="mb-1">
+            <h2 id="contact-section-heading" className="d-flex align-items-center gap-2 mb-1">
+              <SectionIcon name="contact" />
               Contact
             </h2>
             <p className="text-secondary mb-0">Reach out on Discord or Roblox.</p>

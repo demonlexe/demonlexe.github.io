@@ -8,4 +8,10 @@ describe('SectionDivider', () => {
 
     expect(screen.getByRole('separator')).toHaveClass('section-divider')
   })
+
+  it('accepts extra classes for spacing', () => {
+    render(<SectionDivider className="mt-3" />)
+
+    expect(screen.getByRole('separator')).toHaveClass('section-divider', 'mt-3')
+  })
 })
