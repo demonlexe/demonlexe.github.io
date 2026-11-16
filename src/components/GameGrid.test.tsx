@@ -77,6 +77,66 @@ describe('GameGrid', () => {
     expect(titles()).toEqual(['Game 3', 'Game 1', 'Game 2'])
   })
 
+  describe('rank badges', () => {
+    const games = [{ placeId: 1 }, { placeId: 2 }, { placeId: 3 }, { placeId: 4 }]
+
+    function badgeOf(card: HTMLElement) {
+      return card.parentElement?.querySelector('.rank-badge') ?? null
+    }
+
+    beforeEach(() => {
+      loadLive.mockImplementation(async (id) => info(id, { 1: 500, 2: 9000, 3: 70, 4: 10 }[id]!))
+    })
+
+    it('numbers every ranked card from 1 in visit order', async () => {
+      render(<GameGrid games={games} />)
+
+      await waitFor(() => expect(titles()).toEqual(['Game 2', 'Game 1', 'Game 3', 'Game 4']))
+      const badges = screen
+        .getAllByTestId('game-card')
+        .map((card) => badgeOf(card)?.textContent)
+      expect(badges).toEqual(['1', '2', '3', '4'])
+    })
+
+    it('labels each badge for screen readers', async () => {
+      render(<GameGrid games={games} />)
+
+      await waitFor(() => expect(titles()[0]).toBe('Game 2'))
+      expect(screen.getByLabelText('Rank 1 by visits')).toHaveTextContent('1')
+      expect(screen.getByLabelText('Rank 4 by visits')).toHaveTextContent('4')
+    })
+
+    it('uses gold, silver and bronze styles for the top three only', async () => {
+      render(<GameGrid games={games} />)
+
+      await waitFor(() => expect(titles()[0]).toBe('Game 2'))
+      const classes = screen
+        .getAllByTestId('game-card')
+        .map((card) => badgeOf(card)?.className.split(' ').filter((c) => c.startsWith('rank-badge--')))
+      expect(classes).toEqual([['rank-badge--1'], ['rank-badge--2'], ['rank-badge--3'], []])
+    })
+
+    it('shows no badge on a game whose visits are unknown', async () => {
+      loadLive.mockImplementation(async (id) => {
+        if (id === 1) throw new Error('nope')
+        return info(id, { 2: 9000, 3: 70, 4: 10 }[id]!)
+      })
+      render(<GameGrid games={games} />)
+
+      await waitFor(() => expect(titles()).toEqual(['Game 2', 'Game 3', 'Game 4']))
+      const cards = screen.getAllByTestId('game-card')
+      expect(cards).toHaveLength(4)
+      expect(cards.map((card) => badgeOf(card)?.textContent ?? null)).toEqual(['1', '2', '3', null])
+    })
+
+    it('shows no badges before any visit count is known', () => {
+      loadLive.mockReturnValue(new Promise(() => {}))
+      const { container } = render(<GameGrid games={games} />)
+
+      expect(container.querySelectorAll('.rank-badge')).toHaveLength(0)
+    })
+  })
+
   it('puts games whose visits could not be loaded after the ranked ones', async () => {
     loadLive.mockImplementation(async (id) => {
       if (id === 1) throw new Error('nope')

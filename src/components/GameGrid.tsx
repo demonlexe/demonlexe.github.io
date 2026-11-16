@@ -22,6 +22,16 @@ function rankByVisits(
   )
 }
 
+/** Top three get gold, silver and bronze (see `.rank-badge--N` in index.css). */
+function RankBadge({ rank }: { rank: number }) {
+  const medal = rank <= 3 ? ` rank-badge--${rank}` : ''
+  return (
+    <span className={`rank-badge${medal}`} aria-label={`Rank ${rank} by visits`}>
+      {rank}
+    </span>
+  )
+}
+
 function GameGrid({ games }: GameGridProps) {
   const [visits, setVisits] = useState<Record<number, number>>({})
   // Rebuilt from a string key so a fresh `games` array each render doesn't refetch.
@@ -59,9 +69,12 @@ function GameGrid({ games }: GameGridProps) {
 
   return (
     <Row xs={1} md={2} lg={3} className="g-4 mt-1">
-      {ranked.map((game) => (
+      {ranked.map((game, index) => (
         <Col key={game.placeId}>
-          <GameCard placeId={game.placeId} />
+          <div className="position-relative h-100">
+            {game.placeId in visits && <RankBadge rank={index + 1} />}
+            <GameCard placeId={game.placeId} />
+          </div>
         </Col>
       ))}
     </Row>
