@@ -177,3 +177,46 @@ describe('skill lozenges', () => {
     expect(sum(lozenge)).toBeLessThan(sum(toRgb('#7c3aed')) - 60)
   })
 })
+
+// The motion rules live in the last reduced-motion guard, so they only apply when motion is OK.
+const MOTION_GUARD = '@media (prefers-reduced-motion: no-preference)'
+const guardedCss = css.slice(css.lastIndexOf(MOTION_GUARD))
+const unguardedCss = css.slice(0, css.lastIndexOf(MOTION_GUARD))
+
+describe('home avatar bobbing', () => {
+  it('defines a keyframe animation that moves the avatar vertically', () => {
+    expect(css).toMatch(/@keyframes\s+avatar-bob\s*\{[^]*translateY\(/)
+  })
+
+  it('bobs slowly (3s or longer), smoothly and forever', () => {
+    const animation = guardedCss.match(/\.headshot--bobbing\s*\{[^}]*animation:([^;]*);/)
+    expect(animation).not.toBeNull()
+    expect(animation![1]).toMatch(/avatar-bob/)
+    expect(animation![1]).toMatch(/ease-in-out/)
+    expect(animation![1]).toMatch(/infinite/)
+    const seconds = Number(animation![1].match(/(\d+(?:\.\d+)?)s\b/)![1])
+    expect(seconds).toBeGreaterThanOrEqual(3)
+  })
+
+  it('only animates when reduced motion is not requested', () => {
+    expect(unguardedCss).not.toMatch(/animation:/)
+  })
+})
+
+describe('home username vfx', () => {
+  it('fills the username with a gradient clipped to the text', () => {
+    const declarations = rulesFor('.username-vfx').join('\n')
+    expect(declarations).toMatch(/background-image:\s*linear-gradient/)
+    expect(declarations).toMatch(/background-clip:\s*text/)
+    expect(declarations).toMatch(/color:\s*transparent/)
+  })
+
+  it('shimmers the gradient and pulses a glow, only when motion is allowed', () => {
+    expect(css).toMatch(/@keyframes\s+username-shimmer\s*\{[^]*background-position/)
+    expect(css).toMatch(/@keyframes\s+username-glow\s*\{[^]*drop-shadow\(/)
+    const animation = guardedCss.match(/\.username-vfx\s*\{[^}]*animation:([^;]*);/)
+    expect(animation).not.toBeNull()
+    expect(animation![1]).toMatch(/username-shimmer/)
+    expect(animation![1]).toMatch(/username-glow/)
+  })
+})

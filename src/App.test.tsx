@@ -56,6 +56,14 @@ describe('App', () => {
     expect(Number(img.getAttribute('width'))).toBeLessThanOrEqual(96)
   })
 
+  it('bobs the avatar and adds vfx to the username on the home page', () => {
+    render(<App />)
+
+    expect(screen.getByRole('img', { name: /Roblox avatar/i })).toHaveClass('headshot--bobbing')
+    expect(screen.getByRole('heading', { level: 1 })).toHaveClass('username-vfx')
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('DemonLexe')
+  })
+
   it('shows the Roblox avatar headshot', () => {
     render(<App />)
 

@@ -101,3 +101,58 @@ h6 {
   background-color: #5b21b6;
   color: #fff;
 }
+
+/* Home avatar: a slow, gentle vertical bob. */
+@keyframes avatar-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Home username: brand-gradient text with a drifting shimmer and a soft pulsing glow. */
+.username-vfx {
+  display: inline-block;
+  background-image: linear-gradient(90deg, #5b21b6, #1d4ed8, #a78bfa, #1d4ed8, #5b21b6);
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 4px rgba(91, 33, 182, 0.35));
+}
+
+@keyframes username-shimmer {
+  from {
+    background-position: 0% 50%;
+  }
+  to {
+    background-position: 200% 50%;
+  }
+}
+
+@keyframes username-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 3px rgba(91, 33, 182, 0.3));
+  }
+  50% {
+    filter: drop-shadow(0 0 10px rgba(29, 78, 216, 0.6));
+  }
+}
+
+/* Motion is opt-out: skip all of it for visitors who prefer reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .headshot--bobbing {
+    animation: avatar-bob 4s ease-in-out infinite;
+  }
+
+  .username-vfx {
+    animation:
+      username-shimmer 6s linear infinite,
+      username-glow 3s ease-in-out infinite;
+  }
+}
