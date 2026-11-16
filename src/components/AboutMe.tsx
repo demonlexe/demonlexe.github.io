@@ -6,6 +6,7 @@ import {
   type GameEntry,
   type Profile,
 } from '../config.ts'
+import { yearsSince } from '../experience.ts'
 import { gameStore } from '../roblox/gameStore.ts'
 import { fetchGroupMemberCount } from '../roblox/groupInfo.ts'
 import SectionDivider from './SectionDivider.tsx'
@@ -23,7 +24,7 @@ type Total = { status: 'loading' } | { status: 'error' } | { status: 'loaded'; v
 const full = new Intl.NumberFormat('en-US')
 
 function formatYears(years: number): string {
-  return `${years} ${years === 1 ? 'year' : 'years'}`
+  return `${years}+ ${years === 1 ? 'year' : 'years'}`
 }
 
 /** Fetches one number per id and sums them; any failure fails the whole total. */
@@ -79,7 +80,7 @@ function AboutMe({
         <dd className="col-sm-9">{profile.username}</dd>
 
         <dt className="col-sm-3 text-secondary fw-normal">Experience</dt>
-        <dd className="col-sm-9">{formatYears(profile.yearsOfExperience)}</dd>
+        <dd className="col-sm-9">{formatYears(yearsSince(profile.careerStartYear))}</dd>
 
         <dt className="col-sm-3 text-secondary fw-normal">Total visits</dt>
         <dd className="col-sm-9" data-testid="total-visits">{renderTotal(visits)}</dd>

@@ -84,9 +84,13 @@ describe('brand gradient (header)', () => {
     )
   })
 
-  it('uses the same brand gradient as the footer background', () => {
+  it('uses a solid footer background in the same dark purple the header starts with', () => {
     const declarations = rulesFor('.site-footer').join('\n')
-    expect(declarations).toMatch(/background-image:\s*var\(--brand-gradient\)/)
+    expect(declarations).not.toMatch(/gradient/)
+    const match = declarations.match(/background-color:\s*(#[0-9a-fA-F]{6})\b/)
+    expect(match).not.toBeNull()
+    const [headerPurple] = gradientColors('--brand-gradient')
+    expect(toRgb(match![1])).toEqual(headerPurple)
   })
 
   it('keeps the nav tabs light, since the whole header is dark', () => {

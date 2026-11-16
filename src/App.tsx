@@ -7,7 +7,9 @@ import ContactInfo from './components/ContactInfo.tsx'
 import GameCard from './components/GameCard.tsx'
 import Footer from './components/Footer.tsx'
 import Header from './components/Header.tsx'
+import StackList from './components/StackList.tsx'
 import PricingPayment from './components/PricingPayment.tsx'
+import Testimonials from './components/Testimonials.tsx'
 import { siteConfig, type HeaderTab } from './config.ts'
 import { useActiveSection } from './hooks/useActiveSection.ts'
 
@@ -59,14 +61,17 @@ function App() {
           </Container>
         </section>
 
-        <section id="stack" aria-labelledby="stack-heading" className="py-5">
+        <Testimonials />
+
+        <section id="stack" aria-labelledby="stack-heading" className="py-4">
           <Container>
             <h2 id="stack-heading" className="mb-1">
-              Stack
+              Technologies used
             </h2>
             <p className="text-secondary mb-0">
-              Languages, frameworks, and tools — coming soon.
+              Tools I use to build and ship Roblox games.
             </p>
+            <StackList />
           </Container>
         </section>
 

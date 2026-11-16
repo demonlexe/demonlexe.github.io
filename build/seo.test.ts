@@ -163,8 +163,19 @@ describe('buildSitemapXml', () => {
 describe('seoPlugin', () => {
   it('provides the SEO tags through transformIndexHtml', () => {
     const plugin = seoPlugin(config)
-    const result = (plugin.transformIndexHtml as () => unknown)()
-    expect(result).toEqual(buildSeoTags(config))
+    const result = (plugin.transformIndexHtml as unknown as (html: string) => { tags: unknown })('<p></p>')
+    expect(result.tags).toEqual(buildSeoTags(config))
+  })
+
+  it('fills the {{years}} placeholder in index.html from the career start year', () => {
+    const plugin = seoPlugin({
+      ...config,
+      profile: { ...config.profile, careerStartYear: new Date().getFullYear() - 7 },
+    })
+    const result = (plugin.transformIndexHtml as unknown as (html: string) => { html: string })(
+      '<p>{{years}}+ years, again {{years}}+</p>',
+    )
+    expect(result.html).toBe('<p>7+ years, again 7+</p>')
   })
 
   it('emits robots.txt and sitemap.xml on build', () => {

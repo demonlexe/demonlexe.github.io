@@ -11,7 +11,11 @@ describe('ContactInfo', () => {
   })
 
   it('links to Discord using the configured user ID', () => {
-    render(<ContactInfo contact={{ discordUserId: '123456789', robloxUsername: 'DemonLexe' }} />)
+    render(
+      <ContactInfo
+        contact={{ discordUserId: '123456789', robloxUsername: 'DemonLexe', githubUsername: 'demonlexe' }}
+      />,
+    )
 
     const link = screen.getByRole('link', { name: /discord/i })
     expect(link).toHaveAttribute('href', 'https://discord.com/users/123456789')
@@ -20,18 +24,31 @@ describe('ContactInfo', () => {
   })
 
   it('links to the Roblox profile using the configured username', () => {
-    render(<ContactInfo contact={{ discordUserId: '1', robloxUsername: 'DemonLexe' }} />)
+    render(
+      <ContactInfo contact={{ discordUserId: '1', robloxUsername: 'DemonLexe', githubUsername: 'demonlexe' }} />,
+    )
 
     const link = screen.getByRole('link', { name: /roblox/i })
     expect(link).toHaveAttribute('href', 'https://www.roblox.com/users/profile?username=DemonLexe')
     expect(link).toHaveAttribute('target', '_blank')
   })
 
-  it('labels the links exactly "Discord" and "Roblox Profile"', () => {
+  it('links to GitHub using the configured username', () => {
+    render(
+      <ContactInfo contact={{ discordUserId: '1', robloxUsername: 'DemonLexe', githubUsername: 'someone' }} />,
+    )
+
+    const link = screen.getByRole('link', { name: /github/i })
+    expect(link).toHaveAttribute('href', 'https://github.com/someone')
+    expect(link).toHaveAttribute('target', '_blank')
+    expect(link).toHaveAttribute('rel', expect.stringContaining('noreferrer'))
+  })
+
+  it('labels the links exactly "Discord", "Roblox Profile" and "GitHub"', () => {
     render(<ContactInfo />)
 
     const labels = screen.getAllByRole('link').map((link) => link.textContent)
-    expect(labels).toEqual(['Discord', 'Roblox Profile'])
+    expect(labels).toEqual(['Discord', 'Roblox Profile', 'GitHub'])
   })
 
   it('reads defaults from site config', () => {

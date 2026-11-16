@@ -1,5 +1,6 @@
 import type { HtmlTagDescriptor, Plugin } from 'vite'
 import type { SiteConfig } from '../src/config.ts'
+import { yearsSince } from '../src/experience.ts'
 
 const IMAGE_PATH = 'headshot.png'
 const ROBOTS_FILENAME = 'robots.txt'
@@ -103,13 +104,16 @@ export function buildSitemapXml(config: SiteConfig): string {
 
 /**
  * Injects title/meta/Open Graph/JSON-LD tags into index.html from `siteConfig`
- * and emits robots.txt and sitemap.xml on build.
+ * (and fills `{{years}}` in the markup), and emits robots.txt and sitemap.xml on build.
  */
 export function seoPlugin(config: SiteConfig): Plugin {
   return {
     name: 'seo',
-    transformIndexHtml() {
-      return buildSeoTags(config)
+    transformIndexHtml(html) {
+      return {
+        html: html.replaceAll('{{years}}', String(yearsSince(config.profile.careerStartYear))),
+        tags: buildSeoTags(config),
+      }
     },
     buildStart() {
       if (this.environment.mode !== 'build') return

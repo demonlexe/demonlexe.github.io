@@ -7,6 +7,7 @@ interface ContactInfoProps {
 function ContactInfo({ contact = siteConfig.contact }: ContactInfoProps) {
   const discordUrl = `https://discord.com/users/${encodeURIComponent(contact.discordUserId)}`
   const robloxUrl = `https://www.roblox.com/users/profile?username=${encodeURIComponent(contact.robloxUsername)}`
+  const githubUrl = `https://github.com/${encodeURIComponent(contact.githubUsername)}`
 
   return (
     <div className="mt-4">
@@ -19,6 +20,11 @@ function ContactInfo({ contact = siteConfig.contact }: ContactInfoProps) {
         <li>
           <a href={robloxUrl} target="_blank" rel="noreferrer">
             Roblox Profile
+          </a>
+        </li>
+        <li>
+          <a href={githubUrl} target="_blank" rel="noreferrer">
+            GitHub
           </a>
         </li>
       </ul>

@@ -28,6 +28,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  vi.useRealTimers();
   vi.restoreAllMocks();
 });
 
@@ -128,11 +129,19 @@ describe("AboutMe", () => {
     ).toBeTruthy();
   });
 
-  it("shows the username and years of experience from config", () => {
+  it("shows the username and experience calculated from the career start year", () => {
+    vi.useFakeTimers({ toFake: ["Date"], now: new Date("2026-11-15T12:00:00Z") });
     render(<AboutMe />);
 
     expect(screen.getByText("DemonLexe")).toBeInTheDocument();
-    expect(screen.getByText("10 years")).toBeInTheDocument();
+    expect(screen.getByText("10+ years")).toBeInTheDocument();
+  });
+
+  it("updates the experience as the years pass", () => {
+    vi.useFakeTimers({ toFake: ["Date"], now: new Date("2027-01-01T12:00:00Z") });
+    render(<AboutMe />);
+
+    expect(screen.getByText("11+ years")).toBeInTheDocument();
   });
 
   it("lists every skill in the skillset", () => {
@@ -149,6 +158,7 @@ describe("AboutMe", () => {
       "Basic modelling",
       "Social media",
       "Basic animation",
+      "Project management",
     ]);
     for (const item of skills) {
       expect(item).toHaveClass("skill-lozenge");
@@ -160,14 +170,14 @@ describe("AboutMe", () => {
       <AboutMe
         profile={{
           username: "Someone",
-          yearsOfExperience: 1,
+          careerStartYear: new Date().getFullYear() - 1,
           skills: ["Scripting"],
         }}
       />,
     );
 
     expect(screen.getByText("Someone")).toBeInTheDocument();
-    expect(screen.getByText("1 year")).toBeInTheDocument();
+    expect(screen.getByText("1+ year")).toBeInTheDocument();
     expect(screen.getByRole("listitem")).toHaveTextContent("Scripting");
   });
 });
