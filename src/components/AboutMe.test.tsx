@@ -1,6 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import AboutMe from "./AboutMe.tsx";
+import { siteConfig } from "../config.ts";
 import { gameStore } from "../roblox/gameStore.ts";
 import * as groupInfo from "../roblox/groupInfo.ts";
 
@@ -77,6 +78,7 @@ describe("AboutMe", () => {
     const labels = screen.getAllByRole("term").map((el) => el.textContent);
     expect(labels).toEqual([
       "Experience",
+      "Bio",
       "Total visits",
       "Community members",
       "Skillset",
@@ -204,6 +206,8 @@ describe("AboutMe", () => {
         profile={{
           username: "Someone",
           careerStartYear: new Date().getFullYear() - 1,
+          bio: "Custom bio.",
+          bioContact: "Custom contact line.",
           skills: [{ name: "Scripting", kind: "other" }],
         }}
       />,
@@ -211,5 +215,58 @@ describe("AboutMe", () => {
 
     expect(screen.getByText("1+ year")).toBeInTheDocument();
     expect(screen.getByRole("listitem")).toHaveTextContent("Scripting");
+  });
+
+  it("shows the bio in a Bio row directly under Experience", () => {
+    render(<AboutMe />);
+
+    const term = screen.getByText("Bio");
+    expect(term.tagName).toBe("DT");
+    expect(term.previousElementSibling).toBe(
+      screen.getByText("Experience").nextElementSibling,
+    );
+    expect(term.nextElementSibling).toHaveTextContent(siteConfig.profile.bio);
+    expect(term.nextElementSibling).toHaveTextContent(/I'm Lexi/);
+  });
+
+  it("puts the message-me line and Discord link on their own line below the bio", () => {
+    render(<AboutMe />);
+
+    const bio = screen.getByText("Bio").nextElementSibling as HTMLElement;
+    const paragraphs = within(bio).getAllByTestId("bio-paragraph");
+    expect(paragraphs).toHaveLength(2);
+    expect(paragraphs[0]).toHaveTextContent(siteConfig.profile.bio);
+    expect(paragraphs[0]).not.toHaveTextContent(/message me/i);
+    expect(paragraphs[1]).toHaveTextContent(siteConfig.profile.bioContact);
+    expect(paragraphs[1]).toContainElement(
+      within(bio).getByRole("link", { name: "Discord ↗" }),
+    );
+  });
+
+  it("ends the bio with a Discord ↗ link to the configured Discord user", () => {
+    render(
+      <AboutMe
+        profile={{
+          username: "Someone",
+          careerStartYear: 2020,
+          bio: "Hello there.",
+          bioContact: "Message me!",
+          skills: [],
+        }}
+        contact={{
+          discordUserId: "123456789",
+          robloxUsername: "x",
+          githubUsername: "y",
+        }}
+      />,
+    );
+
+    const bio = screen.getByText("Bio").nextElementSibling as HTMLElement;
+    const link = within(bio).getByRole("link", { name: "Discord ↗" });
+    expect(link).toHaveAttribute("href", "https://discord.com/users/123456789");
+    expect(link).toHaveAttribute("target", "_blank");
+    expect(link).toHaveAttribute("rel", "noreferrer");
+    expect(bio).toHaveTextContent("Hello there.");
+    expect(bio).toHaveTextContent("Message me! Discord ↗");
   });
 });

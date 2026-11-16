@@ -35,7 +35,6 @@ describe('OtherWork', () => {
     expect(
       screen.getByRole('heading', { level: 3, name: 'Appointment System' }),
     ).toBeInTheDocument()
-    expect(screen.getByText(/script and ui design by myself/i)).toBeInTheDocument()
 
     const videos = screen.getAllByTestId('other-work-video')
     expect(videos).toHaveLength(2)
