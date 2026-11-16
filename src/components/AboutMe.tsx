@@ -10,6 +10,7 @@ import { yearsSince } from '../experience.ts'
 import { gameStore } from '../roblox/gameStore.ts'
 import { fetchGroupMemberCount } from '../roblox/groupInfo.ts'
 import SectionDivider from './SectionDivider.tsx'
+import SectionIcon from './SectionIcon.tsx'
 
 interface AboutMeProps {
   profile?: Profile
@@ -69,16 +70,14 @@ function AboutMe({
 
   return (
     <section aria-labelledby="about-me-heading" className="mt-5">
-      <h2 id="about-me-heading" className="h3 mb-3 text-uppercase">
+      <SectionDivider />
+
+      <h2 id="about-me-heading" className="h3 d-flex align-items-center gap-2 mb-3 text-uppercase">
+        <SectionIcon name="about" />
         About Me
       </h2>
 
-      <SectionDivider />
-
       <dl className="row mb-0">
-        <dt className="col-sm-3 text-secondary fw-normal">Username</dt>
-        <dd className="col-sm-9">{profile.username}</dd>
-
         <dt className="col-sm-3 text-secondary fw-normal">Experience</dt>
         <dd className="col-sm-9">{formatYears(yearsSince(profile.careerStartYear))}</dd>
 
@@ -95,8 +94,13 @@ function AboutMe({
             className="list-unstyled d-flex flex-wrap gap-2 mb-0"
           >
             {profile.skills.map((skill) => (
-              <Badge as="li" key={skill} bg="" className="skill-lozenge fw-normal fs-6">
-                {skill}
+              <Badge
+                as="li"
+                key={skill.name}
+                bg=""
+                className={`skill-lozenge skill-lozenge--${skill.kind} fw-normal fs-6`}
+              >
+                {skill.name}
               </Badge>
             ))}
           </ul>

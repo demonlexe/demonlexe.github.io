@@ -8,11 +8,17 @@ export type AvailabilityStatus = "open" | "busy" | "closed";
 
 export type HeaderTab = "home" | "work" | "stack" | "pricing" | "contact";
 
+export interface Skill {
+  name: string;
+  /** Programming skills are shown purple, everything else blue. */
+  kind: "programming" | "other";
+}
+
 export interface Profile {
   username: string;
   /** Calendar year I started; the Experience row is calculated from it. */
   careerStartYear: number;
-  skills: readonly string[];
+  skills: readonly Skill[];
 }
 
 export interface ContactDetails {
@@ -101,14 +107,14 @@ export const siteConfig: SiteConfig = {
     username: "DemonLexe",
     careerStartYear: CAREER_START_YEAR,
     skills: [
-      "Frontend programming",
-      "Backend programming",
-      "Web programming",
-      "UI design",
-      "Basic modelling",
-      "Social media",
-      "Basic animation",
-      "Project management",
+      { name: "Frontend programming", kind: "programming" },
+      { name: "Backend programming", kind: "programming" },
+      { name: "Web programming", kind: "programming" },
+      { name: "UI design", kind: "other" },
+      { name: "Basic modelling", kind: "other" },
+      { name: "Social media", kind: "other" },
+      { name: "Basic animation", kind: "other" },
+      { name: "Project management", kind: "other" },
     ],
   },
   contact: {
