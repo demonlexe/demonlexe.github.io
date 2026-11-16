@@ -38,6 +38,20 @@ describe('App', () => {
     expect(screen.getByText('Community members')).toBeInTheDocument()
   })
 
+  it('opens every external link in a new tab, without leaking the opener', async () => {
+    const { container } = render(<App />)
+    await screen.findByText('30,532,000+')
+
+    const external = [...container.querySelectorAll<HTMLAnchorElement>('a[href]')].filter(
+      (a) => /^https?:\/\//.test(a.getAttribute('href') ?? ''),
+    )
+    expect(external.length).toBeGreaterThan(0)
+    for (const link of external) {
+      expect(link, link.outerHTML).toHaveAttribute('target', '_blank')
+      expect(link.getAttribute('rel') ?? '', link.outerHTML).toMatch(/noopener|noreferrer/)
+    }
+  })
+
   it('renders the header with DemonLexe, default lozenge, and 4 tabs', () => {
     render(<App />)
 

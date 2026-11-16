@@ -247,6 +247,29 @@ h6 {
     animation: avatar-bob 4s ease-in-out infinite;
   }
 
+  /* The transition sits on the resting state so the lozenge also shrinks back smoothly. */
+  .skill-lozenge {
+    transition: transform 0.2s ease-out;
+  }
+
+  /* Lozenges sit 0.5rem (8px) apart; 1.06 adds at most ~6px per side, so none ever overlap. */
+  .skill-lozenge:hover {
+    transform: scale(1.06);
+  }
+
+  /*
+   * Game cards grow in place (a transform never reflows the grid). The grid gutter is
+   * 1.5rem (24px) and a card is at most 516px wide, so 1.04 adds ~10px per side: enough
+   * to notice, less than half a gutter, so it never touches a neighbour or the screen edge.
+   */
+  .game-grid__item {
+    transition: transform 0.2s ease-out;
+  }
+
+  .game-grid__item:hover {
+    transform: scale(1.04);
+  }
+
   .username-vfx {
     animation:
       username-shimmer 6s linear infinite,
