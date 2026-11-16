@@ -30,10 +30,10 @@ function App() {
                 alt="DemonLexe's Roblox avatar headshot"
                 width={80}
                 height={80}
-                className="headshot rounded-circle"
+                className="headshot headshot--bobbing rounded-circle"
               />
               <div>
-                <h1 id="home-heading" className="mb-1">
+                <h1 id="home-heading" className="username-vfx mb-1">
                   DemonLexe
                 </h1>
                 <p className="text-secondary mb-0">{siteConfig.tagline}</p>
