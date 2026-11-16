@@ -6,6 +6,7 @@ import GameGrid from './components/GameGrid.tsx'
 import Footer from './components/Footer.tsx'
 import Header from './components/Header.tsx'
 import StackList from './components/StackList.tsx'
+import OtherWork from './components/OtherWork.tsx'
 import PricingPayment from './components/PricingPayment.tsx'
 import Testimonials from './components/Testimonials.tsx'
 import { siteConfig, type HeaderTab } from './config.ts'
@@ -54,6 +55,8 @@ function App() {
             <GameGrid games={siteConfig.games} />
           </Container>
         </section>
+
+        <OtherWork />
 
         <Testimonials />
 
