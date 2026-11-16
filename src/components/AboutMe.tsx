@@ -108,6 +108,9 @@ function AboutMe({
         <dt className="col-sm-3 text-secondary fw-normal">Community members</dt>
         <dd className="col-sm-9" data-testid="community-members">{renderTotal(members)}</dd>
 
+        <dt className="col-sm-3 text-secondary fw-normal">Timezone</dt>
+        <dd className="col-sm-9">{profile.timezone}</dd>
+
         <dt className="col-sm-3 text-secondary fw-normal">Skillset</dt>
         <dd className="col-sm-9">
           <ul

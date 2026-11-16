@@ -81,6 +81,7 @@ describe("AboutMe", () => {
       "Bio",
       "Total visits",
       "Community members",
+      "Timezone",
       "Skillset",
     ]);
   });
@@ -208,6 +209,7 @@ describe("AboutMe", () => {
           careerStartYear: new Date().getFullYear() - 1,
           bio: "Custom bio.",
           bioContact: "Custom contact line.",
+          timezone: "UTC",
           skills: [{ name: "Scripting", kind: "other" }],
         }}
       />,
@@ -251,6 +253,7 @@ describe("AboutMe", () => {
           careerStartYear: 2020,
           bio: "Hello there.",
           bioContact: "Message me!",
+          timezone: "UTC",
           skills: [],
         }}
         contact={{
@@ -268,5 +271,25 @@ describe("AboutMe", () => {
     expect(link).toHaveAttribute("rel", "noreferrer");
     expect(bio).toHaveTextContent("Hello there.");
     expect(bio).toHaveTextContent("Message me! Discord ↗");
+  });
+
+  it("shows the timezone in a Timezone row", () => {
+    render(<AboutMe />);
+
+    const term = screen.getByText("Timezone");
+    expect(term.tagName).toBe("DT");
+    expect(term.nextElementSibling).toHaveTextContent("PST (West Coast USA)");
+  });
+
+  it("shows the timezone from a custom profile", () => {
+    render(
+      <AboutMe
+        profile={{ ...siteConfig.profile, timezone: "UTC" }}
+      />,
+    );
+
+    expect(screen.getByText("Timezone").nextElementSibling).toHaveTextContent(
+      "UTC",
+    );
   });
 });
