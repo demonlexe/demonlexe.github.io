@@ -76,7 +76,7 @@ export interface OtherWorkClient {
 export interface OtherWorkEntry {
   title: string;
   /** Short credit line shown under the title. */
-  note: string;
+  note?: string;
   /** Community the work was done for; icon and member count are fetched live. */
   client: OtherWorkClient;
   videos: readonly WorkVideo[];
@@ -309,15 +309,20 @@ export const siteConfig: SiteConfig = {
   otherWork: [
     {
       title: "Appointment System",
-      note: "Script and UI design by myself",
       client: {
         name: "Valley Community High School",
         groupId: 2768830,
         url: "https://www.roblox.com/communities/2768830/Valley-Community-High-School",
       },
       videos: [
-        { label: "Student side", file: "videos/appointment-system-student.mp4" },
-        { label: "Teacher side", file: "videos/appointment-system-teacher.mp4" },
+        {
+          label: "Student side",
+          file: "videos/appointment-system-student.mp4",
+        },
+        {
+          label: "Teacher side",
+          file: "videos/appointment-system-teacher.mp4",
+        },
       ],
     },
   ],
@@ -330,8 +335,7 @@ export const siteConfig: SiteConfig = {
   seo: {
     siteUrl: "https://demonlexe.github.io/",
     title: "DemonLexe | Roblox Developer for Hire",
-    description:
-      `Hire DemonLexe, a full-stack Roblox developer with ${yearsOfExperience}+ years of experience building engaging games, scripts, UI and backend systems.`,
+    description: `Hire DemonLexe, a full-stack Roblox developer with ${yearsOfExperience}+ years of experience building engaging games, scripts, UI and backend systems.`,
     keywords: [
       "Roblox developer",
       "Roblox scripter",
