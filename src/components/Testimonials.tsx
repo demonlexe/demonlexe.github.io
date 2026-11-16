@@ -1,6 +1,7 @@
 import Card from 'react-bootstrap/Card'
 import Container from 'react-bootstrap/Container'
 import { siteConfig, type Testimonial } from '../config.ts'
+import SectionIcon from './SectionIcon.tsx'
 
 interface TestimonialsProps {
   testimonials?: readonly Testimonial[]
@@ -14,7 +15,8 @@ function Testimonials({
   return (
     <section id="testimonials" aria-labelledby="testimonials-heading" className="py-5">
       <Container>
-        <h2 id="testimonials-heading" className="mb-1">
+        <h2 id="testimonials-heading" className="d-flex align-items-center gap-2 mb-1">
+          <SectionIcon name="testimonials" />
           Testimonials
         </h2>
         <p className="text-secondary">

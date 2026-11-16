@@ -26,7 +26,7 @@ function escapeXml(value: string): string {
 /** schema.org Person data, serialised safely for embedding in a <script> element. */
 export function buildJsonLd(config: SiteConfig): string {
   const { seo, profile, robloxUserId } = config
-  const knowsAbout = [...new Set([...profile.skills, ...seo.keywords])]
+  const knowsAbout = [...new Set([...profile.skills.map((skill) => skill.name), ...seo.keywords])]
 
   const data = {
     '@context': 'https://schema.org',

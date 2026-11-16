@@ -24,6 +24,7 @@ vi.mock('./roblox/gameStore.ts', () => ({
 
 vi.mock('./roblox/groupInfo.ts', () => ({
   fetchGroupMemberCount: vi.fn(async () => 100),
+  fetchGroupIconUrl: vi.fn(async () => 'https://tr.rbxcdn.com/icon.png'),
 }))
 
 describe('App', () => {
@@ -35,6 +36,20 @@ describe('App', () => {
     expect(await screen.findByText('200+')).toBeInTheDocument()
     expect(screen.getByText('Total visits')).toBeInTheDocument()
     expect(screen.getByText('Community members')).toBeInTheDocument()
+  })
+
+  it('opens every external link in a new tab, without leaking the opener', async () => {
+    const { container } = render(<App />)
+    await screen.findByText('30,532,000+')
+
+    const external = [...container.querySelectorAll<HTMLAnchorElement>('a[href]')].filter(
+      (a) => /^https?:\/\//.test(a.getAttribute('href') ?? ''),
+    )
+    expect(external.length).toBeGreaterThan(0)
+    for (const link of external) {
+      expect(link, link.outerHTML).toHaveAttribute('target', '_blank')
+      expect(link.getAttribute('rel') ?? '', link.outerHTML).toMatch(/noopener|noreferrer/)
+    }
   })
 
   it('renders the header with DemonLexe, default lozenge, and 4 tabs', () => {
@@ -77,7 +92,7 @@ describe('App', () => {
     expect(img).toHaveAttribute('src', expect.stringMatching(/headshot\.png$/))
   })
 
-  it('renders all six sections stacked on one page with their headings', () => {
+  it('renders all seven sections stacked on one page with their headings', () => {
     const { container } = render(<App />)
 
     expect(container.querySelectorAll('main')).toHaveLength(1)
@@ -86,13 +101,14 @@ describe('App', () => {
     const expected: [string, number, string][] = [
       ['home', 1, 'DemonLexe'],
       ['work', 2, 'My Games'],
+      ['other-work', 2, 'Other Work'],
       ['testimonials', 2, 'Testimonials'],
       ['stack', 2, 'Technologies used'],
       ['pricing', 2, 'Pricing & Payment'],
       ['contact', 2, 'Contact'],
     ]
     const ids = [...container.querySelectorAll('main > section')].map((el) => el.id)
-    expect(ids).toEqual(['home', 'work', 'testimonials', 'stack', 'pricing', 'contact'])
+    expect(ids).toEqual(['home', 'work', 'other-work', 'testimonials', 'stack', 'pricing', 'contact'])
 
     for (const [id, level, name] of expected) {
       const section = container.querySelector(`main > section#${id}`) as HTMLElement
@@ -106,6 +122,42 @@ describe('App', () => {
     expect(stack.getByText('Tools I use to build and ship Roblox games.')).toBeInTheDocument()
     expect(stack.getByRole('link', { name: 'Rojo' })).toBeInTheDocument()
     expect(stack.getByRole('heading', { level: 3, name: 'Version control' })).toBeInTheDocument()
+  })
+
+  it('has a single gradient divider, above About Me, and none between sections', () => {
+    const { container } = render(<App />)
+
+    const dividers = screen.getAllByRole('separator')
+    expect(dividers).toHaveLength(1)
+    expect(dividers[0]).toHaveClass('section-divider')
+    expect(dividers[0].nextElementSibling).toBe(
+      screen.getByRole('heading', { level: 2, name: /about me/i }),
+    )
+
+    // Sections sit directly next to each other.
+    const children = [...(container.querySelector('main') as HTMLElement).children]
+    expect(children.map((el) => el.tagName)).toEqual(Array(6).fill('SECTION'))
+  })
+
+  it('puts a matching icon to the left of every section title', () => {
+    const { container } = render(<App />)
+
+    const expected: [string, string][] = [
+      ['about-me-heading', 'about'],
+      ['work-heading', 'work'],
+      ['testimonials-heading', 'testimonials'],
+      ['stack-heading', 'stack'],
+      ['pricing-payment-heading', 'pricing'],
+      ['contact-section-heading', 'contact'],
+    ]
+    for (const [headingId, icon] of expected) {
+      const heading = container.querySelector(`#${headingId}`) as HTMLElement
+      expect(heading.firstElementChild).toHaveClass('section-icon', `section-icon--${icon}`)
+      expect(heading.firstElementChild).toHaveAttribute('aria-hidden', 'true')
+    }
+    // The icon doesn't change a title's accessible name.
+    expect(screen.getByRole('heading', { level: 2, name: 'My Games' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 2, name: 'Technologies used' })).toBeInTheDocument()
   })
 
   it('shows every section content at once without clicking any tab', async () => {
@@ -164,7 +216,7 @@ describe('App', () => {
       expect(screen.getByRole('link', { name: label })).toHaveClass('active')
       expect(screen.getAllByRole('link', { name: /^(Home|Work|Stack|Pricing|Contact)$/ }).filter((l) => l.classList.contains('active'))).toHaveLength(1)
 
-      expect(container.querySelectorAll('main > section')).toHaveLength(6)
+      expect(container.querySelectorAll('main > section')).toHaveLength(7)
       expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('DemonLexe')
       expect(screen.getByRole('heading', { level: 2, name: /about me/i })).toBeInTheDocument()
       expect(screen.getAllByTestId('game-card')).toHaveLength(5)

@@ -1,7 +1,7 @@
 :root {
   --font-display: 'Chakra Petch', system-ui, sans-serif;
   --brand-gradient: linear-gradient(90deg, #5b21b6, #1d4ed8);
-  --divider-gradient: linear-gradient(90deg, #5b21b6, #1d4ed8, #ffffff);
+  --divider-gradient: linear-gradient(90deg, #5b21b6, #1d4ed8, transparent);
   /* Warm parchment page background. */
   --page-bg: #f4ecd8;
 }
@@ -152,8 +152,51 @@ h6 {
 }
 
 .skill-lozenge {
-  background-color: #5b21b6;
   color: #fff;
+}
+
+/* Same purple and blue as the ends of the header gradient. */
+.skill-lozenge--programming {
+  background-color: #5b21b6;
+}
+
+.skill-lozenge--other {
+  background-color: #1d4ed8;
+}
+
+/* Decorative icon left of each section title, filled with the header gradient. */
+.section-icon {
+  display: inline-block;
+  flex: none;
+  width: 1.6rem;
+  height: 1.6rem;
+  background: var(--brand-gradient);
+  -webkit-mask: var(--section-icon) center / contain no-repeat;
+  mask: var(--section-icon) center / contain no-repeat;
+}
+
+.section-icon--about {
+  --section-icon: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Ccircle cx=%2212%22 cy=%228%22 r=%224%22/%3E%3Cpath d=%22M4 21c1-4 4-6 8-6s7 2 8 6%22/%3E%3C/svg%3E");
+}
+
+.section-icon--work {
+  --section-icon: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M6 6h12a4 4 0 0 1 4 4v3a4 4 0 0 1-4 4h-1.5l-2-2h-5l-2 2H6a4 4 0 0 1-4-4v-3a4 4 0 0 1 4-4z%22/%3E%3Cpath d=%22M7 9.5v3M5.5 11h3%22/%3E%3Ccircle cx=%2215.5%22 cy=%2210%22 r=%22.6%22/%3E%3Ccircle cx=%2217.5%22 cy=%2212%22 r=%22.6%22/%3E%3C/svg%3E");
+}
+
+.section-icon--testimonials {
+  --section-icon: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M3 21c3-1 5-3 5-8V5H3v8h4%22/%3E%3Cpath d=%22M14 21c3-1 5-3 5-8V5h-5v8h4%22/%3E%3C/svg%3E");
+}
+
+.section-icon--stack {
+  --section-icon: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16%22/%3E%3C/svg%3E");
+}
+
+.section-icon--pricing {
+  --section-icon: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Ccircle cx=%2212%22 cy=%2212%22 r=%229%22/%3E%3Cpath d=%22M14.5 9.5C14 8.7 13.1 8.2 12 8.2c-1.5 0-2.5.8-2.5 1.9s1 1.7 2.5 2 2.5.8 2.5 2-1 1.9-2.5 1.9c-1.1 0-2-.5-2.5-1.3M12 6v2M12 16v2%22/%3E%3C/svg%3E");
+}
+
+.section-icon--contact {
+  --section-icon: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M21 12a8 8 0 0 1-11.5 7.2L4 20l1-4.5A8 8 0 1 1 21 12z%22/%3E%3C/svg%3E");
 }
 
 /* Home avatar: a slow, gentle vertical bob. */
@@ -204,9 +247,38 @@ h6 {
     animation: avatar-bob 4s ease-in-out infinite;
   }
 
+  /* The transition sits on the resting state so the lozenge also shrinks back smoothly. */
+  .skill-lozenge {
+    transition: transform 0.2s ease-out;
+  }
+
+  /* Lozenges sit 0.5rem (8px) apart; 1.06 adds at most ~6px per side, so none ever overlap. */
+  .skill-lozenge:hover {
+    transform: scale(1.06);
+  }
+
+  /*
+   * Game cards grow in place (a transform never reflows the grid). The grid gutter is
+   * 1.5rem (24px) and a card is at most 516px wide, so 1.04 adds ~10px per side: enough
+   * to notice, less than half a gutter, so it never touches a neighbour or the screen edge.
+   */
+  .game-grid__item {
+    transition: transform 0.2s ease-out;
+  }
+
+  .game-grid__item:hover {
+    transform: scale(1.04);
+  }
+
   .username-vfx {
     animation:
       username-shimmer 6s linear infinite,
       username-glow 3s ease-in-out infinite;
   }
+}
+
+.other-work__video {
+  display: block;
+  aspect-ratio: 16 / 9;
+  background-color: #000;
 }

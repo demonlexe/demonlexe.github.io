@@ -35,6 +35,17 @@ beforeEach(() => {
 })
 
 describe('GameGrid', () => {
+  it('wraps each card (and its rank badge) in a hover-grow item inside a g-4 grid', () => {
+    loadLive.mockReturnValue(new Promise(() => {}))
+    const { container } = render(<GameGrid games={[{ placeId: 1 }, { placeId: 2 }]} />)
+
+    // The 1.5rem gutter is what the grow limit in index.css is checked against.
+    expect(container.firstElementChild).toHaveClass('g-4')
+    for (const card of screen.getAllByTestId('game-card')) {
+      expect(card.parentElement).toHaveClass('game-grid__item')
+    }
+  })
+
   it('orders the games from most to fewest visits once loaded', async () => {
     render(<GameGrid games={[{ placeId: 1 }, { placeId: 2 }, { placeId: 3 }]} />)
 

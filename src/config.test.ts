@@ -132,14 +132,14 @@ describe("siteConfig", () => {
       username: "DemonLexe",
       careerStartYear: 2016,
       skills: [
-        "Frontend programming",
-        "Backend programming",
-        "Web programming",
-        "UI design",
-        "Basic modelling",
-        "Social media",
-        "Basic animation",
-        "Project management",
+        { name: "Frontend programming", kind: "programming" },
+        { name: "Backend programming", kind: "programming" },
+        { name: "Web programming", kind: "programming" },
+        { name: "UI design", kind: "other" },
+        { name: "Basic modelling", kind: "other" },
+        { name: "Social media", kind: "other" },
+        { name: "Basic animation", kind: "other" },
+        { name: "Project management", kind: "other" },
       ],
     });
   });
