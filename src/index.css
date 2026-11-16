@@ -252,8 +252,9 @@ h6 {
     transition: transform 0.2s ease-out;
   }
 
+  /* Lozenges sit 0.5rem (8px) apart; 1.06 adds at most ~6px per side, so none ever overlap. */
   .skill-lozenge:hover {
-    transform: scale(1.12);
+    transform: scale(1.06);
   }
 
   /*

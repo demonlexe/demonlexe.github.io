@@ -239,12 +239,24 @@ describe('home avatar bobbing', () => {
 })
 
 describe('skill lozenge hover', () => {
-  it('grows when hovered', () => {
+  // AboutMe: the list uses `gap-2` (0.5rem). "Project management" is the widest lozenge, ~170px.
+  const GAP_PX = 8
+  const WIDEST_LOZENGE_PX = 200
+  const scaleOf = () => {
     const hover = guardedCss.match(/\.skill-lozenge:hover\s*\{([^}]*)\}/)
     expect(hover).not.toBeNull()
     const scale = hover![1].match(/transform:\s*scale\((\d+(?:\.\d+)?)\)/)
     expect(scale).not.toBeNull()
-    expect(Number(scale![1])).toBeGreaterThan(1)
+    return Number(scale![1])
+  }
+
+  it('grows when hovered', () => {
+    expect(scaleOf()).toBeGreaterThan(1)
+  })
+
+  it('grows by less than the gap between lozenges, so it never overlaps another skill', () => {
+    const growthPerSide = ((scaleOf() - 1) * WIDEST_LOZENGE_PX) / 2
+    expect(growthPerSide).toBeLessThan(GAP_PX)
   })
 
   it('animates the transform on the resting state, so it shrinks back smoothly when hover ends', () => {
