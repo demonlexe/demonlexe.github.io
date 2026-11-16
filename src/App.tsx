@@ -1,10 +1,8 @@
 import { useState } from 'react'
-import Col from 'react-bootstrap/Col'
 import Container from 'react-bootstrap/Container'
-import Row from 'react-bootstrap/Row'
 import AboutMe from './components/AboutMe.tsx'
 import ContactInfo from './components/ContactInfo.tsx'
-import GameCard from './components/GameCard.tsx'
+import GameGrid from './components/GameGrid.tsx'
 import Footer from './components/Footer.tsx'
 import Header from './components/Header.tsx'
 import StackList from './components/StackList.tsx'
@@ -53,13 +51,7 @@ function App() {
             <p className="text-secondary mb-0">
               These are games I own and developed from start to finish.
             </p>
-            <Row xs={1} md={2} lg={3} className="g-4 mt-1">
-              {siteConfig.games.map((game) => (
-                <Col key={game.placeId}>
-                  <GameCard placeId={game.placeId} />
-                </Col>
-              ))}
-            </Row>
+            <GameGrid games={siteConfig.games} />
           </Container>
         </section>
 
