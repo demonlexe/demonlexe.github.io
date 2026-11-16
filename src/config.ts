@@ -124,7 +124,7 @@ export const siteConfig: SiteConfig = {
       author: "moslugs",
       quote: [
         "Hello everyone,",
-        "If you are reading this comment, you guys should most definitely give Avoxea a chance. She is one of the dedicated programmers I know on the ROBLOX DevForum, and I can assure you she is able to get the job done. She currently works for me with Valley Community High School alongside two other developers and serves as the Board of Development & Head Developer. Her work is worth it.",
+        "If you are reading this comment, you guys should most definitely give DemonLexe a chance. She is one of the dedicated programmers I know on the ROBLOX DevForum, and I can assure you she is able to get the job done. She currently works for me with Valley Community High School alongside two other developers and serves as the Board of Development & Head Developer. Her work is worth it.",
       ],
     },
     {
@@ -217,6 +217,16 @@ export const siteConfig: SiteConfig = {
           name: "Proton",
           url: "https://github.com/Sleitnick/rbxts-proton",
           description: "Game code structure, networking",
+        },
+      ],
+    },
+    {
+      category: "Data",
+      tools: [
+        {
+          name: "ProfileStore",
+          url: "https://devforum.roblox.com/t/profilestore-save-your-player-data-easy-datastore-module/3190543",
+          description: "Session-locked player data saving",
         },
       ],
     },
