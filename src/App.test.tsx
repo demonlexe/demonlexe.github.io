@@ -108,6 +108,42 @@ describe('App', () => {
     expect(stack.getByRole('heading', { level: 3, name: 'Version control' })).toBeInTheDocument()
   })
 
+  it('has a single gradient divider, above About Me, and none between sections', () => {
+    const { container } = render(<App />)
+
+    const dividers = screen.getAllByRole('separator')
+    expect(dividers).toHaveLength(1)
+    expect(dividers[0]).toHaveClass('section-divider')
+    expect(dividers[0].nextElementSibling).toBe(
+      screen.getByRole('heading', { level: 2, name: /about me/i }),
+    )
+
+    // Sections sit directly next to each other.
+    const children = [...(container.querySelector('main') as HTMLElement).children]
+    expect(children.map((el) => el.tagName)).toEqual(Array(6).fill('SECTION'))
+  })
+
+  it('puts a matching icon to the left of every section title', () => {
+    const { container } = render(<App />)
+
+    const expected: [string, string][] = [
+      ['about-me-heading', 'about'],
+      ['work-heading', 'work'],
+      ['testimonials-heading', 'testimonials'],
+      ['stack-heading', 'stack'],
+      ['pricing-payment-heading', 'pricing'],
+      ['contact-section-heading', 'contact'],
+    ]
+    for (const [headingId, icon] of expected) {
+      const heading = container.querySelector(`#${headingId}`) as HTMLElement
+      expect(heading.firstElementChild).toHaveClass('section-icon', `section-icon--${icon}`)
+      expect(heading.firstElementChild).toHaveAttribute('aria-hidden', 'true')
+    }
+    // The icon doesn't change a title's accessible name.
+    expect(screen.getByRole('heading', { level: 2, name: 'My Games' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 2, name: 'Technologies used' })).toBeInTheDocument()
+  })
+
   it('shows every section content at once without clicking any tab', async () => {
     const { container } = render(<App />)
 

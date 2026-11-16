@@ -114,7 +114,7 @@ describe('buildJsonLd', () => {
 
   it('lists skills and keywords under knowsAbout without duplicates', () => {
     expect(data.knowsAbout).toEqual(
-      expect.arrayContaining([...config.profile.skills, 'alpha', 'beta', 'gamma']),
+      expect.arrayContaining([...config.profile.skills.map((skill) => skill.name), 'alpha', 'beta', 'gamma']),
     )
     expect(new Set(data.knowsAbout).size).toBe(data.knowsAbout.length)
   })

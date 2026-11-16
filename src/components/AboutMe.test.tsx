@@ -76,7 +76,6 @@ describe("AboutMe", () => {
 
     const labels = screen.getAllByRole("term").map((el) => el.textContent);
     expect(labels).toEqual([
-      "Username",
       "Experience",
       "Total visits",
       "Community members",
@@ -115,7 +114,7 @@ describe("AboutMe", () => {
     ).toBeInTheDocument();
   });
 
-  it("places a divider between the heading and the username", () => {
+  it("places the divider above the About Me heading", () => {
     render(<AboutMe />);
 
     const heading = screen.getByRole("heading", {
@@ -123,23 +122,25 @@ describe("AboutMe", () => {
       name: /about me/i,
     });
     const divider = screen.getByRole("separator");
-    const username = screen.getByText("Username");
 
     expect(
-      heading.compareDocumentPosition(divider) &
+      divider.compareDocumentPosition(heading) &
         Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
-    expect(
-      divider.compareDocumentPosition(username) &
-        Node.DOCUMENT_POSITION_FOLLOWING,
-    ).toBeTruthy();
+    expect(heading.previousElementSibling).toBe(divider);
   });
 
-  it("shows the username and experience calculated from the career start year", () => {
+  it("does not show a username row", () => {
+    render(<AboutMe />);
+
+    expect(screen.queryByText("Username")).not.toBeInTheDocument();
+    expect(screen.queryByText("DemonLexe")).not.toBeInTheDocument();
+  });
+
+  it("shows the experience calculated from the career start year", () => {
     vi.useFakeTimers({ toFake: ["Date"], now: new Date("2026-11-15T12:00:00Z") });
     render(<AboutMe />);
 
-    expect(screen.getByText("DemonLexe")).toBeInTheDocument();
     expect(screen.getByText("10+ years")).toBeInTheDocument();
   });
 
@@ -171,18 +172,43 @@ describe("AboutMe", () => {
     }
   });
 
+  it("makes the three programming skills purple and every other skill blue", () => {
+    render(<AboutMe />);
+
+    const items = within(
+      screen.getByRole("list", { name: /skillset/i }),
+    ).getAllByRole("listitem");
+    const kinds = Object.fromEntries(
+      items.map((item) => [
+        item.textContent,
+        item.classList.contains("skill-lozenge--programming")
+          ? "programming"
+          : item.classList.contains("skill-lozenge--other")
+            ? "other"
+            : "none",
+      ]),
+    );
+
+    expect(Object.entries(kinds).filter(([, kind]) => kind === "programming").map(([name]) => name)).toEqual([
+      "Frontend programming",
+      "Backend programming",
+      "Web programming",
+    ]);
+    expect(Object.values(kinds).filter((kind) => kind === "other")).toHaveLength(items.length - 3);
+    expect(Object.values(kinds)).not.toContain("none");
+  });
+
   it("accepts a custom profile", () => {
     render(
       <AboutMe
         profile={{
           username: "Someone",
           careerStartYear: new Date().getFullYear() - 1,
-          skills: ["Scripting"],
+          skills: [{ name: "Scripting", kind: "other" }],
         }}
       />,
     );
 
-    expect(screen.getByText("Someone")).toBeInTheDocument();
     expect(screen.getByText("1+ year")).toBeInTheDocument();
     expect(screen.getByRole("listitem")).toHaveTextContent("Scripting");
   });
